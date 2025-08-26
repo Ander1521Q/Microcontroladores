@@ -6,7 +6,7 @@ Linker command line:
   --edf=C:/Program Files/Microchip/MPLABX/v6.25/packs/Microchip/PIC18Fxxxx_DFP/1.7.171/xc8\pic\dat\20250117225543_en.msgs \
   -cs -h+dist/default/production\Alarma_Led.X.production.sym \
   --cmf=dist/default/production\Alarma_Led.X.production.cmf -z -Q18F4550 \
-  -oC:\Users\ANDER\AppData\Local\Temp\xcAs47s.\driver_tmp_3.o \
+  -oC:\Users\ANDER\AppData\Local\Temp\xcAs1vg.\driver_tmp_3.o \
   --fixupoverflow=error -ver=XC8 PIC(R) Assembler --fixupoverflow=lstwarn \
   -Mdist/default/production/Alarma_Led.X.production.map -E1 \
   -ACODE=00h-07FFFh -ACONST=00h-07FFFh -ASMALLCONST=0800h-08FFhx120 \
@@ -16,7 +16,7 @@ Linker command line:
   -ABANK4=0400h-04FFh -ABANK5=0500h-05FFh -ABANK6=0600h-06FFh \
   -ABANK7=0700h-07FFh -ASFR=0F60h-0FFFh -ABIGSFR=0F60h-0FFFh \
   -AIDLOC=0200000h-0200007h -AEEDATA=0F00000h-0F000FFh \
-  build/default/production/Led_1.o 
+  build/default/production/Led_1.o build/default/production/Alarma_1.o 
 
 Object code version is 3.11
 
@@ -29,6 +29,8 @@ build/default/production/Led_1.o
                 config                           300000   300000        E        0       4
                 main_code                          7FF6     7FF6        A     3FFB       0
                 resetVec                           7FF2     7FF2        4     3FF9       0
+build/default/production/Alarma_1.o
+                
 
 TOTAL           Name                               Link     Load   Length     Space
         CLASS   CODE           

@@ -4,11 +4,11 @@ Linker command line:
 
 -W-3 \
   --edf=C:/Program Files/Microchip/MPLABX/v6.25/packs/Microchip/PIC18Fxxxx_DFP/1.7.171/xc8\pic\dat\20250117225543_en.msgs \
-  -cs -h+dist/default/debug\Alarma_Led.X.debug.sym \
-  --cmf=dist/default/debug\Alarma_Led.X.debug.cmf -z -Q18F4550 \
-  -oC:\Users\ANDER\AppData\Local\Temp\xcAs1ms.\driver_tmp_3.o \
+  -cs -h+dist/default/debug\Encender_Led.X.debug.sym \
+  --cmf=dist/default/debug\Encender_Led.X.debug.cmf -z -Q18F4550 \
+  -oC:\Users\ANDER\AppData\Local\Temp\xcAsfq8.\driver_tmp_3.o \
   --fixupoverflow=error -ver=XC8 PIC(R) Assembler --fixupoverflow=lstwarn \
-  -Mdist/default/debug/Alarma_Led.X.debug.map -E1 -ACODE=00h-07FFFh \
+  -Mdist/default/debug/Encender_Led.X.debug.map -E1 -ACODE=00h-07FFFh \
   -ACONST=00h-07FFFh -ASMALLCONST=0800h-08FFhx120 \
   -AMEDIUMCONST=0800h-07FFFh -ACOMRAM=00h-05Fh -AABS1=00h-07FFh \
   -ABIGRAM=00h-07FFh -ARAM=060h-0FFh,0100h-01FFhx7 -ABANK0=060h-0FFh \
@@ -16,7 +16,7 @@ Linker command line:
   -ABANK4=0400h-04FFh -ABANK5=0500h-05FFh -ABANK6=0600h-06FFh \
   -ABANK7=0700h-07FFh -ASFR=0F60h-0FFFh -ABIGSFR=0F60h-0FFFh \
   -AIDLOC=0200000h-0200007h -AEEDATA=0F00000h-0F000FFh \
-  build/default/debug/Led_1.o build/default/debug/Alarma_1.o 
+  build/default/debug/Led_1.o 
 
 Object code version is 3.11
 
@@ -29,8 +29,6 @@ build/default/debug/Led_1.o
                 config                           300000   300000        E        0       4
                 main_code                          7FF6     7FF6        A     3FFB       0
                 resetVec                           7FF2     7FF2        4     3FF9       0
-build/default/debug/Alarma_1.o
-                config                           300000   300000        E        0       4
 
 TOTAL           Name                               Link     Load   Length     Space
         CLASS   CODE           

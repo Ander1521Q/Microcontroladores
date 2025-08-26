@@ -1,19 +1,21 @@
-# 1 "Led_1.asm"
+# 1 "Alarma_1.asm"
 # 1 "<built-in>" 1
 # 1 "<built-in>" 3
 # 286 "<built-in>" 3
 # 1 "<command line>" 1
 # 1 "<built-in>" 2
-# 1 "Led_1.asm" 2
-;=========================================
-;Encender Led con PIC18F4550
-;=========================================
-
+# 1 "Alarma_1.asm" 2
+;=======================================
+;Codigo para PIC18F4550 en Assembler
+;Led en RB0 encendido 5s y apagado 2s
+;Oscilador interno a 8Mhz
+;=======================================
 ; PIC18F4550 Configuracion de bits
 
-  CONFIG WDT = OFF ; Desactiva el Watchdog timer
-  CONFIG PBADEN = OFF ; configura los PORTB como digitales
-  CONFIG LVP = OFF ; Desactiva la programacion a bajo voltaje
+  CONFIG FOSC = INTOSC_EC ;Utilizar oscilador interno de 8MHz
+  CONFIG WDT = OFF ;Desactiva el Watchdog timer
+  CONFIG PBADEN = OFF ;Configura los PORTB como digitales
+  CONFIG LVP = OFF ; Desactiva la programacion a bajo voltage
 
 # 1 "C:\\Program Files\\Microchip\\xc8\\v3.00\\pic\\include/xc.inc" 1 3
 
@@ -5452,21 +5454,48 @@ stk_offset SET 0
 auto_size SET 0
 ENDM
 # 6 "C:\\Program Files\\Microchip\\xc8\\v3.00\\pic\\include/xc.inc" 2 3
-# 12 "Led_1.asm" 2
+# 14 "Alarma_1.asm" 2
 
-  PSECT resetVec, class=CODE, reloc=2 ; Sección para el vector de reinicio
+  PSECT resetVec, class=CODE, reloc=2 ;Vector de reinicio
 
-  ORG 0X00
+  ORG 0x00
   GOTO Inicio
 
-  PSECT main_code, class=CODE, reloc=2 ; Sección de código principal
+  PSECT main_code, clss=CODE, reloc=2 ;Codigo principal
 
   Inicio
-    CLRF TRISB ; Configura todo PORTB como salida
-    CLRF LATB ; Limpia las salidas en 0v
+    CLRF TRISB
+    CLRF LATB
 
-  LOOP
-    BSF LATB,0 ; Enciende LED en ((PORTB) and 0FFh), 0, a
-    GOTO LOOP ; Bucle infinito
+  Loop
+    BSF LATB, 0
+    CALL Retardo_5s
 
-    END
+    BCF LATB, 0
+    CALL Retardo_2s
+
+    GOTO Loop
+
+;=====================================
+;Subrutinas de retardos
+;=====================================
+; === Retardo 1s ====
+  Retardo_1s:
+    MOVLW 25
+    MOVWF ContadorExterno
+
+  LoopExterno:
+    MOVLW 250
+    MOVWF ContadorInterno
+
+  LoopInterno:
+    NOP
+    NOP
+    NOP
+    DECFSZ ContadorInterno
+    GOTO LoopInterno
+
+    DECFSZ ContadorExterrno
+    GOTO LoopExterno
+
+    RETURN

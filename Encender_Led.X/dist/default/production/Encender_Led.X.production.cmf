@@ -54,11 +54,11 @@ MEDIUMCONST 800-7FF1 1
 # All other numeric values are in decimal.
 %LINETAB
 $build/default/production/Led_1.o
-7FF6 main_code CODE >22:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Led_1.asm
-7FF8 main_code CODE >23:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Led_1.asm
-7FFA main_code CODE >26:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Led_1.asm
-7FFC main_code CODE >27:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Led_1.asm
-7FF2 resetVec CODE >17:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Led_1.asm
+7FF6 main_code CODE >21:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Encender_Led.X\Led_1.asm
+7FF8 main_code CODE >22:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Encender_Led.X\Led_1.asm
+7FFA main_code CODE >25:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Encender_Led.X\Led_1.asm
+7FFC main_code CODE >26:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Encender_Led.X\Led_1.asm
+7FF2 resetVec CODE >16:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Encender_Led.X\Led_1.asm
 # %SYMTAB Section
 # An enumeration of all symbols in the program.
 # The beginning of the section is indicated by %SYMTAB.

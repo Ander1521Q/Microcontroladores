@@ -6,15 +6,15 @@
 # 1 "<built-in>" 2
 # 1 "Led_1.asm" 2
 
-; PIC18F4550 Configuration Bit Settings
+;=========================================
+;PRENDER UN LED CON PIC18F4550
+;=========================================
 
-; Assembly source line config statements
+; PIC18F4550 Configuracion de bits
 
-  CONFIG FOSC = INTOSC_EC ; Oscillator Selection bits (Internal oscillator, CLKO function on RA6, EC used by USB (INTCKO))
-  CONFIG WDT = OFF ; Watchdog Timer Enable bit (WDT disabled (control is placed on the SWDTEN bit))
-  CONFIG PBADEN = OFF ; PORTB A/D Enable bit (PORTB<4:0> pins are configured as digital I/O on Reset)
-  CONFIG LVP = OFF ; Single-Supply ICSP Enable bit (Single-Supply ICSP disabled)
-
+  CONFIG WDT = OFF ; Desactiva el Watchdog timer
+  CONFIG PBADEN = OFF ; configura los PORTB como digitales
+  CONFIG LVP = OFF ; Desactiva la programacion a bajo voltaje
 
 # 1 "C:\\Program Files\\Microchip\\xc8\\v3.00\\pic\\include/xc.inc" 1 3
 
@@ -5454,7 +5454,8 @@ auto_size SET 0
 ENDM
 # 6 "C:\\Program Files\\Microchip\\xc8\\v3.00\\pic\\include/xc.inc" 2 3
 # 13 "Led_1.asm" 2
- PSECT resetVec, class=CODE, reloc=2 ; Sección para el vector de reinicio
+
+  PSECT resetVec, class=CODE, reloc=2 ; Sección para el vector de reinicio
 
   ORG 0X00
   GOTO Inicio

@@ -5461,11 +5461,11 @@ ENDM
 
   PSECT main_code, class=CODE, reloc=2 ; Sección de código principal
 
-  Inicio
+  Inicio:
     CLRF TRISB ; Configura todo PORTB como salida
     CLRF LATB ; Limpia las salidas en 0v
 
-  LOOP
+  LOOP:
     BSF LATB,0 ; Enciende LED en ((PORTB) and 0FFh), 0, a
     GOTO LOOP ; Bucle infinito
 

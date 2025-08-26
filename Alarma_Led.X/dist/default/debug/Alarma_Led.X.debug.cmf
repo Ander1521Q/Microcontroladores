@@ -15,6 +15,8 @@ $build/default/debug/Led_1.o
 resetVec CODE 0 7FF2 7FF2 4 1 2
 main_code CODE 0 7FF6 7FF6 A 1 2
 config CONFIG 4 300000 300000 E 1 1
+$build/default/debug/Alarma_1.o
+config CONFIG 4 300000 300000 E 1 1
 # %UNUSED Section
 # This section enumerates the unused ranges of each CLASS. Each entry
 # is described on a single line as follows:
