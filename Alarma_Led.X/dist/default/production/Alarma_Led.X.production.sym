@@ -1,5 +1,5 @@
 __S0 8000 0 ABS 0
-__S1 0 0 ABS 0
+__S1 63 0 ABS 0
 __S3 0 0 ABS 0
 __Hudata_bank4 0 0 ABS 0
 __Ludata_bank4 0 0 ABS 0
@@ -31,7 +31,7 @@ __Hudata_bank1 0 0 ABS 0
 __Ludata_bank1 0 0 ABS 0
 __Hspace_0 8000 0 ABS 0
 __Lspace_0 0 0 ABS 0
-__Hspace_1 0 0 ABS 0
+__Hspace_1 63 0 ABS 0
 __Lspace_1 0 0 ABS 0
 __Hudata_bank7 0 0 ABS 0
 __Ludata_bank7 0 0 ABS 0
@@ -46,14 +46,40 @@ __Lmain_code 0 0 ABS 0
 __Hudata_bank3 0 0 ABS 0
 __Ludata_bank3 0 0 ABS 0
 %segments
-main_code 7FF6 7FFF CODE 7FF6 0
-resetVec 7FF2 7FF5 CODE 7FF2 0
+udata 60 62 RAM 60 1
+main_code 7FB4 7FFF CODE 7FB4 0
+resetVec 7FB0 7FB3 CODE 7FB0 0
 %locals
-build/default/production/Led_1.o
-Led_1.asm
-17 7FF2 0 CODE 0
-Led_1.asm
-22 7FF6 0 CODE 0
-23 7FF8 0 CODE 0
-26 7FFA 0 CODE 0
-27 7FFC 0 CODE 0
+build/default/production/Alarma_1.o
+Alarma_1.asm
+20 7FB0 0 CODE 0
+Alarma_1.asm
+26 7FB4 0 CODE 0
+27 7FB6 0 CODE 0
+28 7FB8 0 CODE 0
+31 7FBC 0 CODE 0
+32 7FBE 0 CODE 0
+33 7FC0 0 CODE 0
+36 7FC2 0 CODE 0
+37 7FC6 0 CODE 0
+38 7FC8 0 CODE 0
+39 7FCC 0 CODE 0
+42 7FD0 0 CODE 0
+43 7FD2 0 CODE 0
+44 7FD4 0 CODE 0
+47 7FD6 0 CODE 0
+48 7FDA 0 CODE 0
+49 7FDC 0 CODE 0
+50 7FE0 0 CODE 0
+53 7FE4 0 CODE 0
+54 7FE6 0 CODE 0
+57 7FE8 0 CODE 0
+58 7FEA 0 CODE 0
+61 7FEC 0 CODE 0
+62 7FEE 0 CODE 0
+63 7FF0 0 CODE 0
+64 7FF2 0 CODE 0
+65 7FF4 0 CODE 0
+66 7FF8 0 CODE 0
+67 7FFA 0 CODE 0
+69 7FFE 0 CODE 0
