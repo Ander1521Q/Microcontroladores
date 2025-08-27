@@ -6,7 +6,7 @@ Linker command line:
   --edf=C:/Program Files/Microchip/MPLABX/v6.25/packs/Microchip/PIC18Fxxxx_DFP/1.7.171/xc8\pic\dat\20250117225543_en.msgs \
   -cs -h+dist/default/production\Alarma_Led.X.production.sym \
   --cmf=dist/default/production\Alarma_Led.X.production.cmf -z -Q18F4550 \
-  -oC:\Users\ANDER\AppData\Local\Temp\xcAs9g0.\driver_tmp_3.o \
+  -oC:\Users\ANDER\AppData\Local\Temp\xcAs5a4.\driver_tmp_3.o \
   --fixupoverflow=error -ver=XC8 PIC(R) Assembler --fixupoverflow=lstwarn \
   -Mdist/default/production/Alarma_Led.X.production.map -E1 \
   -ACODE=00h-07FFFh -ACONST=00h-07FFFh -ASMALLCONST=0800h-08FFhx120 \
@@ -27,14 +27,14 @@ Machine type is 18F4550
                 Name                               Link     Load   Length Selector   Space Scale
 build/default/production/Alarma_1.o
                 config                           300000   300000        E        0       4
-                main_code                          7FB4     7FB4       4C     3FDA       0
-                resetVec                           7FB0     7FB0        4     3FD8       0
-                udata                                60       60        3       60       1
+                main_code                          7FAA     7FAA       56     3FD5       0
+                resetVec                           7FA6     7FA6        4     3FD3       0
+                udata                                60       60        4       60       1
 
 TOTAL           Name                               Link     Load   Length     Space
         CLASS   CODE           
-                main_code                          7FB4     7FB4       4C         0
-                resetVec                           7FB0     7FB0        4         0
+                main_code                          7FAA     7FAA       56         0
+                resetVec                           7FA6     7FA6        4         0
 
         CLASS   CONST          
 
@@ -49,7 +49,7 @@ TOTAL           Name                               Link     Load   Length     Sp
         CLASS   BIGRAM         
 
         CLASS   RAM            
-                udata                                60       60        3         1
+                udata                                60       60        4         1
 
         CLASS   BANK0          
 
@@ -82,15 +82,15 @@ TOTAL           Name                               Link     Load   Length     Sp
 
 SEGMENTS        Name                           Load    Length   Top    Selector   Space  Class
 
-                udata                          000060  000003  000063        60       1  RAM     
-                resetVec                       007FB0  000004  007FB4      3FD8       0  CODE    
-                main_code                      007FB4  00004C  008000      3FDA       0  CODE    
+                udata                          000060  000004  000064        60       1  RAM     
+                resetVec                       007FA6  000004  007FAA      3FD3       0  CODE    
+                main_code                      007FAA  000056  008000      3FD5       0  CODE    
 
 
 UNUSED ADDRESS RANGES
 
         Name                Unused          Largest block    Delta
-        BANK0            000063-0000FF               9D
+        BANK0            000064-0000FF               9C
         BANK1            000100-0001FF              100
         BANK2            000200-0002FF              100
         BANK3            000300-0003FF              100
@@ -100,15 +100,15 @@ UNUSED ADDRESS RANGES
         BANK7            000700-0007FF              100
         BIGRAM           000000-0007FF              800
         BIGSFR           000F60-000FFF               A0
-        CODE             000000-007FAF             7FB0
+        CODE             000000-007FA5             7FA6
         COMRAM           000000-00005F               60
-        CONST            000000-007FAF             7FB0
+        CONST            000000-007FA5             7FA6
         EEDATA           F00000-F000FF              100
         IDLOC            200000-200007                8
-        MEDIUMCONST      000800-007FAF             77B0
-        RAM              000063-0007FF              100
+        MEDIUMCONST      000800-007FA5             77A6
+        RAM              000064-0007FF              100
         SFR              000F60-000FFF               A0
-        SMALLCONST       000800-007FAF              100
+        SMALLCONST       000800-007FA5              100
 
                                   Symbol Table
 
@@ -116,7 +116,7 @@ __H__absolute__ __absolute__ 000000  __Hcode         code         000000
 __Hconfig       config       30000E  __Hdata         data         000000
 __Hedata        edata        000000  __Hmain_code    main_code    000000
 __HresetVec     resetVec     000000  __Hspace_0      (abs)        008000
-__Hspace_1      (abs)        000063  __Hspace_3      (abs)        000000
+__Hspace_1      (abs)        000064  __Hspace_3      (abs)        000000
 __Hspace_4      (abs)        60000E  __Hudata        udata        000000
 __Hudata_acs    udata_acs    000000  __Hudata_bank0  udata_bank0  000000
 __Hudata_bank1  udata_bank1  000000  __Hudata_bank2  udata_bank2  000000
@@ -133,6 +133,6 @@ __Ludata_bank0  udata_bank0  000000  __Ludata_bank1  udata_bank1  000000
 __Ludata_bank2  udata_bank2  000000  __Ludata_bank3  udata_bank3  000000
 __Ludata_bank4  udata_bank4  000000  __Ludata_bank5  udata_bank5  000000
 __Ludata_bank6  udata_bank6  000000  __Ludata_bank7  udata_bank7  000000
-__S0            (abs)        008000  __S1            (abs)        000063
+__S0            (abs)        008000  __S1            (abs)        000064
 __S3            (abs)        000000  isa$std         (abs)        000001
 isa$xinst       (abs)        000000  

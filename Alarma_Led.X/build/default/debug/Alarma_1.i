@@ -5494,12 +5494,16 @@ ENDM
     GOTO Encendido ;Cuando termina vuelve a encender el Led
 ; === Retardo 1s ====
   Retardo_1s:
-    MOVLW 25 ;Carga 25 en w (contador externo)
+    MOVLW 4 ;Carga 4 en w (contador externo)
     MOVWF ContadorExterno ;Guardaen la variable ContadorExterno
 
   LoopExterno:
-    MOVLW 250 ;Carga 25 en W (contador interno)
+    MOVLW 257 ;Carga 257 en W (contador medio)
     MOVWF ContadorInterno ; Guarda en la variable ContadorExterno
+
+  LoopMedio:
+    MOVLW 300 ;Carga 300 en W (contador interno)
+    MOVWF ContadorMedio
 
   LoopInterno:
     NOP ;Consume un ciclo
@@ -5507,6 +5511,8 @@ ENDM
     NOP ;Consume un ciclo
     DECFSZ ContadorInterno, F ;Decrementa el contador interno, si no es 0 repite
     GOTO LoopInterno ;Repite hasta llegar a 0
+    DECFSZ ContadorMedio, F ;Decrementa el contador Medio, si no es 0 repite
+    GOTO LoopMedio ;Repite hasta llegar a 0
     DECFSZ ContadorExterno, F ;Cuando Interno llega a 0, decrementa el externo
     GOTO LoopExterno ;Si no es 0, repite el externo
 
@@ -5514,6 +5520,7 @@ ENDM
 
     PSECT udata
     ContadorExterno: DS 1 ;Reserva 1 byte para el contador externo
+    ContadorMedio: DS 1 ;Reserva 1 byte para el contador medio
     ContadorInterno: DS 1 ;Reserva 1 byte para el contador interno
     ContadorSegs: DS 1 ;Reserva 1 byte para los segundos
 
