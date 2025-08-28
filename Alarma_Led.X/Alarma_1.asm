@@ -22,6 +22,9 @@
   PSECT main_code, class=CODE, reloc=2 ;Codigo principal
   
   Inicio:
+    ;Configurar reloj interno a 8MHz
+    MOVLW 0b01110110 ;valores binarios necesarios para el reloj de 8MHz
+    MOVWF OSCCON ;Guarda en al variable OSCCON
     
     CLRF TRISB ;Configura los PORTB como salida
     CLRF LATB ;Configura PORTB en 0
@@ -50,15 +53,15 @@
     GOTO Encendido ;Cuando termina vuelve a encender el Led
 ; === Retardo 1s ====
   Retardo_1s:
-    MOVLW 4 ;Carga 4 en w (contador externo)
+    MOVLW 6 ;Carga 4 en w (contador externo)
     MOVWF ContadorExterno ;Guardaen la variable ContadorExterno
     
   LoopExterno:
-    MOVLW 257 ;Carga 257 en W (contador medio)
+    MOVLW 250 ;Carga 257 en W (contador medio)
     MOVWF ContadorInterno ; Guarda en la variable ContadorExterno 
     
   LoopMedio:
-    MOVLW 300 ;Carga 300 en W (contador interno)
+    MOVLW 250 ;Carga 300 en W (contador interno)
     MOVWF ContadorMedio
     
   LoopInterno:
