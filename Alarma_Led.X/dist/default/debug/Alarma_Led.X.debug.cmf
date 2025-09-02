@@ -13,8 +13,8 @@
 %PSECTS
 $build/default/debug/Alarma_1.o
 udata RAM 1 60 60 4 1 1
-resetVec CODE 0 7FA2 7FA2 4 1 2
-main_code CODE 0 7FA6 7FA6 5A 1 2
+resetVec CODE 0 7FA4 7FA4 4 1 2
+main_code CODE 0 7FA8 7FA8 58 1 2
 config CONFIG 4 300000 300000 E 1 1
 # %UNUSED Section
 # This section enumerates the unused ranges of each CLASS. Each entry
@@ -32,15 +32,15 @@ BANK4 400-4FF 1
 BANK5 500-5FF 1
 BANK6 600-6FF 1
 BANK7 700-7FF 1
-CONST 0-7FA1 1
+CONST 0-7FA3 1
 IDLOC 200000-200007 1
-SMALLCONST 800-7FA1 1
-CODE 0-7FA1 1
+SMALLCONST 800-7FA3 1
+CODE 0-7FA3 1
 BIGRAM 0-7FF 1
 BIGSFR F60-FFF 1
 COMRAM 0-5F 1
 EEDATA F00000-F000FF 1
-MEDIUMCONST 800-7FA1 1
+MEDIUMCONST 800-7FA3 1
 # %LINETAB Section
 # This section enumerates the file/line to address mappings.
 # The beginning of the section is indicated by %LINETAB.
@@ -55,32 +55,31 @@ MEDIUMCONST 800-7FA1 1
 # All other numeric values are in decimal.
 %LINETAB
 $build/default/debug/Alarma_1.o
-7FA6 main_code CODE >26:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FA8 main_code CODE >27:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FAA main_code CODE >29:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FAC main_code CODE >30:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FAE main_code CODE >31:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FB2 main_code CODE >34:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FB4 main_code CODE >35:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FB6 main_code CODE >36:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FB8 main_code CODE >39:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FBC main_code CODE >40:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FBE main_code CODE >41:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FC2 main_code CODE >42:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FC6 main_code CODE >45:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FC8 main_code CODE >46:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FCA main_code CODE >47:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FCC main_code CODE >50:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FD0 main_code CODE >51:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FD2 main_code CODE >52:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FD6 main_code CODE >53:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FDA main_code CODE >56:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FDC main_code CODE >57:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FDE main_code CODE >60:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FE0 main_code CODE >61:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FE2 main_code CODE >64:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FE4 main_code CODE >65:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FE6 main_code CODE >68:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FA8 main_code CODE >26:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FAA main_code CODE >27:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FAC main_code CODE >29:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FAE main_code CODE >30:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FB0 main_code CODE >31:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FB4 main_code CODE >34:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FB6 main_code CODE >35:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FB8 main_code CODE >36:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FBA main_code CODE >39:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FBE main_code CODE >40:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FC0 main_code CODE >41:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FC4 main_code CODE >42:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FC8 main_code CODE >45:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FCA main_code CODE >46:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FCC main_code CODE >47:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FCE main_code CODE >50:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FD2 main_code CODE >51:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FD4 main_code CODE >52:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FD8 main_code CODE >53:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FDC main_code CODE >56:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FDE main_code CODE >57:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FE0 main_code CODE >60:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FE2 main_code CODE >61:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FE4 main_code CODE >64:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FE6 main_code CODE >65:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
 7FE8 main_code CODE >69:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
 7FEA main_code CODE >70:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
 7FEC main_code CODE >71:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
@@ -90,7 +89,7 @@ $build/default/debug/Alarma_1.o
 7FF8 main_code CODE >75:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
 7FFA main_code CODE >76:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
 7FFE main_code CODE >78:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
-7FA2 resetVec CODE >20:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
+7FA4 resetVec CODE >20:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Alarma_Led.X\Alarma_1.asm
 # %SYMTAB Section
 # An enumeration of all symbols in the program.
 # The beginning of the section is indicated by %SYMTAB.
@@ -175,8 +174,8 @@ __Ludata_acs 0 0 ABS 0 udata_acs -
 # All other numeric quantities are in decimal.
 %SEGMENTS
 udata 1 60 60 4 1
-resetVec 0 7FA2 7FA2 4 1
-main_code 0 7FA6 7FA6 5A 1
+resetVec 0 7FA4 7FA4 4 1
+main_code 0 7FA8 7FA8 58 1
 # %NOTES Section
 # This section contains data of all the note-psects.  The beginning of the section
 # is indicated by %NOTES. The first line indicates the name and decimal

@@ -16,14 +16,14 @@
   
   PSECT resetVec, class=CODE, reloc=2 ;Vector de reinicio
   
-  ORG 0x00
+  ORG 0x00 ;Vector reset
   GOTO Inicio ;Va a Inicio
   
   PSECT main_code, class=CODE, reloc=2 ;Codigo principal
   
   Inicio:
     ;Configurar reloj interno a 8MHz
-    MOVLW 0b01110110 ;valores binarios necesarios para el reloj de 8MHz
+    MOVLW 0b01110010 ;valores binarios necesarios para el reloj de 8MHz
     MOVWF OSCCON ;Guarda en al variable OSCCON
     
     CLRF TRISB ;Configura los PORTB como salida
@@ -53,19 +53,19 @@
     GOTO Encendido ;Cuando termina vuelve a encender el Led
 ; === Retardo 1s ====
   Retardo_1s:
-    MOVLW 6 ;Carga 4 en w (contador externo)
+    MOVLW 8 ;Carga 4 en w (contador externo)
     MOVWF ContadorExterno ;Guardaen la variable ContadorExterno
     
   LoopExterno:
-    MOVLW 250 ;Carga 257 en W (contador medio)
-    MOVWF ContadorInterno ; Guarda en la variable ContadorExterno 
+    MOVLW 200 ;Carga 257 en W (contador medio)
+    MOVWF ContadorMedio ; Guarda en la variable ContadorMedio
     
   LoopMedio:
     MOVLW 250 ;Carga 300 en W (contador interno)
-    MOVWF ContadorMedio
+    MOVWF ContadorInterno ;Guarda en la variable ContadorInterno
     
   LoopInterno:
-    NOP ;Consume un ciclo
+    ;NOP ;Consume un ciclo
     NOP ;Consume un ciclo
     NOP ;Consume un ciclo
     DECFSZ ContadorInterno, F ;Decrementa el contador interno, si no es 0 repite
@@ -83,5 +83,5 @@
     ContadorInterno: DS 1 ;Reserva 1 byte para el contador interno
     ContadorSegs: DS 1 ;Reserva 1 byte para los segundos
  
-  END ;Fin del codigo
+  END ;Fin codigo
    
