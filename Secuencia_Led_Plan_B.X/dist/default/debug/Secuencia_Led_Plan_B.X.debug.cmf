@@ -13,8 +13,8 @@
 %PSECTS
 $build/default/debug/Secuencias_Led_B.o
 udata RAM 1 60 60 3 1 1
-resetVec CODE 0 7F9C 7F9C 4 1 2
-main_code CODE 0 7FA0 7FA0 60 1 2
+resetVec CODE 0 7F48 7F48 4 1 2
+main_code CODE 0 7F4C 7F4C B4 1 2
 config CONFIG 4 300000 300000 E 1 1
 # %UNUSED Section
 # This section enumerates the unused ranges of each CLASS. Each entry
@@ -32,15 +32,15 @@ BANK4 400-4FF 1
 BANK5 500-5FF 1
 BANK6 600-6FF 1
 BANK7 700-7FF 1
-CONST 0-7F9B 1
+CONST 0-7F47 1
 IDLOC 200000-200007 1
-SMALLCONST 800-7F9B 1
-CODE 0-7F9B 1
+SMALLCONST 800-7F47 1
+CODE 0-7F47 1
 BIGRAM 0-7FF 1
 BIGSFR F60-FFF 1
 COMRAM 0-5F 1
 EEDATA F00000-F000FF 1
-MEDIUMCONST 800-7F9B 1
+MEDIUMCONST 800-7F47 1
 # %LINETAB Section
 # This section enumerates the file/line to address mappings.
 # The beginning of the section is indicated by %LINETAB.
@@ -55,44 +55,74 @@ MEDIUMCONST 800-7F9B 1
 # All other numeric values are in decimal.
 %LINETAB
 $build/default/debug/Secuencias_Led_B.o
-7FA0 main_code CODE >24:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FA2 main_code CODE >25:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FA4 main_code CODE >27:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FA6 main_code CODE >28:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FA8 main_code CODE >30:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FAC main_code CODE >33:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FB0 main_code CODE >36:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FB2 main_code CODE >37:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FB4 main_code CODE >38:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FB8 main_code CODE >40:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FBA main_code CODE >41:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FBC main_code CODE >42:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FC0 main_code CODE >44:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FC2 main_code CODE >45:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FC4 main_code CODE >46:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FC8 main_code CODE >48:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FCA main_code CODE >49:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FCC main_code CODE >50:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FD0 main_code CODE >52:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FD2 main_code CODE >53:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FD6 main_code CODE >54:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FDA main_code CODE >60:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FDC main_code CODE >61:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FDE main_code CODE >64:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FE0 main_code CODE >65:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FE2 main_code CODE >68:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FE4 main_code CODE >69:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FE6 main_code CODE >72:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FE8 main_code CODE >73:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FEA main_code CODE >74:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FEC main_code CODE >75:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FEE main_code CODE >76:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FF2 main_code CODE >77:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FF4 main_code CODE >78:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FF8 main_code CODE >79:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FFA main_code CODE >80:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7FFE main_code CODE >82:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
-7F9C resetVec CODE >19:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F4C main_code CODE >24:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F4E main_code CODE >25:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F50 main_code CODE >27:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F52 main_code CODE >28:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F54 main_code CODE >30:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F58 main_code CODE >33:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F5C main_code CODE >36:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F5E main_code CODE >37:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F60 main_code CODE >38:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F64 main_code CODE >40:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F66 main_code CODE >41:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F68 main_code CODE >42:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F6C main_code CODE >44:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F6E main_code CODE >45:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F70 main_code CODE >46:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F74 main_code CODE >48:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F76 main_code CODE >49:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F78 main_code CODE >50:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F7C main_code CODE >52:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F7E main_code CODE >53:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F82 main_code CODE >54:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F86 main_code CODE >57:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F88 main_code CODE >58:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F8A main_code CODE >59:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F8E main_code CODE >61:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F90 main_code CODE >62:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F92 main_code CODE >63:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F96 main_code CODE >65:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F98 main_code CODE >66:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F9A main_code CODE >67:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F9E main_code CODE >69:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FA0 main_code CODE >70:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FA2 main_code CODE >71:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FA6 main_code CODE >73:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FA8 main_code CODE >74:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FAA main_code CODE >75:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FAE main_code CODE >77:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FB0 main_code CODE >78:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FB2 main_code CODE >79:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FB6 main_code CODE >81:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FB8 main_code CODE >82:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FBC main_code CODE >83:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FC0 main_code CODE >86:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FC2 main_code CODE >87:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FC4 main_code CODE >88:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FC8 main_code CODE >90:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FCA main_code CODE >91:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FCC main_code CODE >92:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FD0 main_code CODE >94:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FD2 main_code CODE >95:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FD6 main_code CODE >96:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FDA main_code CODE >103:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FDC main_code CODE >104:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FDE main_code CODE >107:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FE0 main_code CODE >108:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FE2 main_code CODE >111:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FE4 main_code CODE >112:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FE6 main_code CODE >115:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FE8 main_code CODE >116:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FEA main_code CODE >117:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FEC main_code CODE >118:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FEE main_code CODE >119:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FF2 main_code CODE >120:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FF4 main_code CODE >121:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FF8 main_code CODE >122:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FFA main_code CODE >123:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7FFE main_code CODE >125:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
+7F48 resetVec CODE >19:C:\Users\ANDER\Desktop\Microcotroladores\Microcontroladores\Secuencia_Led_Plan_B.X\Secuencias_Led_B.asm
 # %SYMTAB Section
 # An enumeration of all symbols in the program.
 # The beginning of the section is indicated by %SYMTAB.
@@ -177,8 +207,8 @@ __Ludata_acs 0 0 ABS 0 udata_acs -
 # All other numeric quantities are in decimal.
 %SEGMENTS
 udata 1 60 60 3 1
-resetVec 0 7F9C 7F9C 4 1
-main_code 0 7FA0 7FA0 60 1
+resetVec 0 7F48 7F48 4 1
+main_code 0 7F4C 7F4C B4 1
 # %NOTES Section
 # This section contains data of all the note-psects.  The beginning of the section
 # is indicated by %NOTES. The first line indicates the name and decimal

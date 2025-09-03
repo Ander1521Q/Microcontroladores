@@ -5497,6 +5497,49 @@ ENDM
  CALL Retardo_1s
  GOTO Secuencia1
 
+    Secuencia2:
+ MOVLW 0b00000001
+ MOVWF LATB
+ CALL Retardo_1s
+
+ MOVLW 0b00000010
+ MOVWF LATB
+ CALL Retardo_1s
+
+ MOVLW 0b00000100
+ MOVWF LATB
+ CALL Retardo_1s
+
+ MOVLW 0b00001000
+ MOVWF LATB
+ CALL Retardo_1s
+
+ MOVLW 0b00000100
+ MOVWF LATB
+ CALL Retardo_1s
+
+ MOVLW 0b00000010
+ MOVWF LATB
+ CALL Retardo_1s
+
+ CLRF LATB
+ CALL Retardo_1s
+ GOTO Secuencia1
+
+    Secuencia3:
+ MOVLW 0b00000101
+ MOVWF LATB
+ CALL Retardo_1s
+
+ MOVLW 0b00001010
+ MOVWF LATB
+ CALL Retardo_1s
+
+ CLRF LATB
+ CALL Retardo_1s
+ GOTO Secuencia1
+
+
 ;------------------------------------------------------
 ; Subrutina Retardo de 1 segundo
 ;------------------------------------------------------
