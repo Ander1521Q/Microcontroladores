@@ -1,22 +1,22 @@
-# 1 "Alarma_1.asm"
+# 1 "Secuencias_Led_B.asm"
 # 1 "<built-in>" 1
 # 1 "<built-in>" 3
 # 286 "<built-in>" 3
 # 1 "<command line>" 1
 # 1 "<built-in>" 2
-# 1 "Alarma_1.asm" 2
-;=======================================
-;Codigo para PIC18F4550 en Assembler
-;Led en RB0 encendido 5s y apagado 2s
-;Oscilador interno a 8Mhz
-;=======================================
-; PIC18F4550 Configuracion de bits
+# 1 "Secuencias_Led_B.asm" 2
+;===============================================
+;Secuencia_Led_B Codio para PIC18F4550
+;3 Secuencias distintas y 4 leds en RB0 - RB3
+;Oscilador interno de 8MHz
+;===============================================
 
-  CONFIG FOSC = INTOSC_EC ;Utilizar oscilador interno de 8MHz
-  CONFIG WDT = OFF ;Desactiva el Watchdog timer
-  CONFIG PBADEN = OFF ;Configura los PORTB como digitales
-  CONFIG LVP = OFF ; Desactiva la programacion a bajo voltage
+;Configuracion de bits para PIC18F4550
 
+  CONFIG FOSC = INTOSC_EC ; Oscillator Selection bits (Internal oscillator, CLKO function on RA6, EC used by USB (INTCKO))
+  CONFIG WDT = OFF ; Watchdog Timer Enable bit (WDT disabled (control is placed on the SWDTEN bit)
+  CONFIG PBADEN = OFF ; PORTB A/D Enable bit (PORTB<4:0> pins are configured as digital I/O on Reset)
+  CONFIG LVP = OFF ; Single-Supply ICSP Enable bit (Single-Supply ICSP disabled)
 
 ;Incluir definiciones para el PIC18F4550
 # 1 "C:\\Program Files\\Microchip\\xc8\\v3.00\\pic\\include/xc.inc" 1 3
@@ -5456,75 +5456,79 @@ stk_offset SET 0
 auto_size SET 0
 ENDM
 # 6 "C:\\Program Files\\Microchip\\xc8\\v3.00\\pic\\include/xc.inc" 2 3
-# 16 "Alarma_1.asm" 2
+# 16 "Secuencias_Led_B.asm" 2
 
-  PSECT resetVec, class=CODE, reloc=2 ;Vector de reinicio
+    PSECT resetVec, class=CODE, reloc=2 ;Vector de reinicio
+    ORG 0X00 ;Vector reset
+    GOTO Inicio ;Va a inicio
 
-  ORG 0x00 ;Vector reset
-  GOTO Inicio ;Va a Inicio
+    PSECT main_code, class=CODE, reloc=2 ;Codigo principal
 
-  PSECT main_code, class=CODE, reloc=2 ;Codigo principal
+    Inicio:
+ MOVLW 0b01110010 ;Configurar reloj a 8Mhz
+ MOVWF OSCCON
 
-  Inicio:
-    ;Configurar reloj interno a 8MHz
-    MOVLW 0b01110010 ;valores binarios necesarios para el reloj de 8MHz
-    MOVWF OSCCON ;Guarda en al variable OSCCON
+ CLRF TRISB ;Configuta PORTB como salida
+ CLRF LATB ;PORTB en 0
 
-    CLRF TRISB ;Configura los PORTB como salida
-    CLRF LATB ;Configura PORTB en 0
-    GOTO Encendido ;Va a Encendido
+ CALL Secuencia1
+ ;CALL Secuencia2
+ ;CALL Secuencia3
+ GOTO $ ;Saltar a la direccion actual (se queda en el buclee actual)
 
-  Encendido:
-    BSF LATB, 0 ;Coloca 5v en ((PORTB) and 0FFh), 0, a
-    MOVLW 5 ;Carga 5 en W
-    MOVWF ContadorSegs ;Guarda 5 en la variable ContadorSegs
+    Secuencia1:
+ MOVLW 0b00000001
+ MOVWF LATB
+ CALL Retardo_1s
 
- EncendidoLoop:
-    CALL Retardo_1s ;Llama a la subrutina retardo_1s
-    DECFSZ ContadorSegs, F ;Decrementa ContadorSegs, si llega a 0 salta a la siguiente
-    GOTO EncendidoLoop ;Si no llega a 0, repite
-    GOTO Apagado ;Va a la rutina apagado, cuando llega a 0
+ MOVLW 0b00000011
+ MOVWF LATB
+ CALL Retardo_1s
 
- Apagado:
-    BCF LATB, 0 ;Apaga el Led, ((PORTB) and 0FFh), 0, a en 0v
-    MOVLW 2 ;Carga 2 en W
-    MOVWF ContadorSegs ;Guarda el 2 en la variable ContadorSegs
+ MOVLW 0b00000111
+ MOVWF LATB
+ CALL Retardo_1s
 
- ApagadoLoop:
-    CALL Retardo_1s ;llama al retardo_1s
-    DECFSZ ContadorSegs, F ;Decrementa ContadorSegs, si llega a 0 salta
-    GOTO ApagadoLoop ;Si no es 0, repite el bucle
-    GOTO Encendido ;Cuando termina vuelve a encender el Led
-; === Retardo 1s ====
-  Retardo_1s:
-    MOVLW 8 ;Carga 4 en w (contador externo)
-    MOVWF ContadorExterno ;Guardaen la variable ContadorExterno
+ MOVLW 0b00001111
+ MOVWF LATB
+ CALL Retardo_1s
 
-  LoopExterno:
-    MOVLW 200 ;Carga 257 en W (contador medio)
-    MOVWF ContadorMedio ; Guarda en la variable ContadorMedio
+ CLRF LATB
+ CALL Retardo_1s
+ GOTO Secuencia1
 
-  LoopMedio:
-    MOVLW 250 ;Carga 300 en W (contador interno)
-    MOVWF ContadorInterno ;Guarda en la variable ContadorInterno
+;------------------------------------------------------
+; Subrutina Retardo de 1 segundo
+;------------------------------------------------------
+    Retardo_1s:
+ MOVLW 8
+ MOVWF ContadorExterno
 
-  LoopInterno:
-    NOP ;Consume un ciclo
-    NOP ;Consume un ciclo
-    NOP ;Consume un ciclo
-    DECFSZ ContadorInterno, F ;Decrementa el contador interno, si no es 0 repite
-    GOTO LoopInterno ;Repite hasta llegar a 0
-    DECFSZ ContadorMedio, F ;Decrementa el contador Medio, si no es 0 repite
-    GOTO LoopMedio ;Repite hasta llegar a 0
-    DECFSZ ContadorExterno, F ;Cuando Interno llega a 0, decrementa el externo
-    GOTO LoopExterno ;Si no es 0, repite el externo
+    LoopExterno:
+ MOVLW 200
+ MOVWF ContadorMedio
 
-    RETURN ;Cuando ambos llegan a 0 se regresa
+    LoopMedio:
+ MOVLW 250
+ MOVWF ContadorInterno
 
-    PSECT udata
-    ContadorExterno: DS 1 ;Reserva 1 byte para el contador externo
-    ContadorMedio: DS 1 ;Reserva 1 byte para el contador medio
-    ContadorInterno: DS 1 ;Reserva 1 byte para el contador interno
-    ContadorSegs: DS 1 ;Reserva 1 byte para los segundos
+    LoopInterno:
+ NOP
+ NOP
+ NOP
+ DECFSZ ContadorInterno, F
+ GOTO LoopInterno
+ DECFSZ ContadorMedio, F
+ GOTO LoopMedio
+ DECFSZ ContadorExterno, F
+ GOTO LoopExterno
 
-  END ;Fin codigo
+ RETURN
+
+
+    PSECT udata ;Deficnion de variables
+      ContadorExterno: DS 1
+      ContadorMedio: DS 1
+      ContadorInterno: DS 1
+
+    END

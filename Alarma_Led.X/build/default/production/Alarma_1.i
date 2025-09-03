@@ -5509,7 +5509,7 @@ ENDM
     MOVWF ContadorInterno ;Guarda en la variable ContadorInterno
 
   LoopInterno:
-    ;NOP ;Consume un ciclo
+    NOP ;Consume un ciclo
     NOP ;Consume un ciclo
     NOP ;Consume un ciclo
     DECFSZ ContadorInterno, F ;Decrementa el contador interno, si no es 0 repite
