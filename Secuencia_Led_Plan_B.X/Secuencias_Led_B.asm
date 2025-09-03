@@ -27,31 +27,31 @@
 	CLRF TRISB ;Configuta PORTB como salida
 	CLRF LATB ;PORTB en 0
 	
-	CALL Secuencia1
-	;CALL Secuencia2
+	;CALL Secuencia1
+	CALL Secuencia2
 	;CALL Secuencia3
 	GOTO $ ;Saltar a la direccion actual (se queda en el buclee actual)
 	
-    Secuencia1:
-	MOVLW 0b00000001
-	MOVWF LATB
-	CALL Retardo_1s
+    ;Secuencia1:
+	;MOVLW 0b00000001
+	;MOVWF LATB
+	;CALL Retardo_1s
 	
-	MOVLW 0b00000011
-	MOVWF LATB
-	CALL Retardo_1s
+	;MOVLW 0b00000011
+	;MOVWF LATB
+	;CALL Retardo_1s
 	
-	MOVLW 0b00000111
-	MOVWF LATB
-	CALL Retardo_1s
+	;MOVLW 0b00000111
+	;MOVWF LATB
+	;CALL Retardo_1s
 	
-	MOVLW 0b00001111
-	MOVWF LATB
-	CALL Retardo_1s
+	;MOVLW 0b00001111
+	;MOVWF LATB
+	;CALL Retardo_1s
 	
-	CLRF LATB
-	CALL Retardo_1s
-	GOTO Secuencia1
+	;CLRF LATB
+	;CALL Retardo_1s
+	;GOTO Secuencia1
 	
     Secuencia2:
 	MOVLW 0b00000001
@@ -80,20 +80,20 @@
 	
 	CLRF LATB
 	CALL Retardo_1s
-	GOTO Secuencia1
+	GOTO Secuencia2
 	
-    Secuencia3:
-	MOVLW 0b00000101
-	MOVWF LATB
-	CALL Retardo_1s
+    ;Secuencia3:
+	;MOVLW 0b00000101
+	;MOVWF LATB
+	;CALL Retardo_1s
 	
-	MOVLW 0b00001010
-	MOVWF LATB
-	CALL Retardo_1s
+	;MOVLW 0b00001010
+	;MOVWF LATB
+	;CALL Retardo_1s
 	
-	CLRF LATB
-	CALL Retardo_1s
-	GOTO Secuencia1
+	;CLRF LATB
+	;CALL Retardo_1s
+	;GOTO Secuencia3
 
 	
 ;------------------------------------------------------
