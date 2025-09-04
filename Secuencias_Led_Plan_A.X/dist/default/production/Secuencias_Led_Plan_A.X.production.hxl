@@ -1,0 +1,40 @@
+### HEXMate logfile and output summary ###
+
+### Command-line arguments ###
+ C:\Users\ANDER\AppData\Local\Temp\xcAsq40.\driver_tmp_3.o
+ -Odist/default/production\Secuencias_Led_Plan_A.X.production.hex
+ -logfile=dist/default/production\Secuencias_Led_Plan_A.X.production.hxl
+ -addressing=1
+ -break=300000
+
+### Memory Usage ###
+ Input file ranges:
+  7F78h - 7FFFh		(C:\Users\ANDER\AppData\Local\Temp\xcAsq40.\driver_tmp_3.o)
+  300000h - 300003h		(C:\Users\ANDER\AppData\Local\Temp\xcAsq40.\driver_tmp_3.o)
+  300005h - 300006h		(C:\Users\ANDER\AppData\Local\Temp\xcAsq40.\driver_tmp_3.o)
+  300008h - 30000Dh		(C:\Users\ANDER\AppData\Local\Temp\xcAsq40.\driver_tmp_3.o)
+ Unused ranges:
+  0h - 7F77h
+  8000h - 2FFFFFh
+  300004h - 300004h
+  300007h - 300007h
+
+### Hex Memory Map ###
+ Legend:
+  -- = Unused memory
+  H1 = Input file             (C:\Users\ANDER\AppData\Local\Temp\xcAsq40.\driver_tmp_3.o)
+----------------------------------------------------------
+         | 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
+----------------------------------------------------------
+00007F70 | -- -- -- -- -- -- -- -- H1 H1 H1 H1 H1 H1 H1 H1
+00007F80 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00007F90 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00007FA0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00007FB0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00007FC0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00007FD0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00007FE0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00007FF0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+----------------------------------------------------------
+00300000 | H1 H1 H1 H1 -- H1 H1 -- H1 H1 H1 H1 H1 H1 -- --
+00300010 | --
