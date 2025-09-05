@@ -5465,16 +5465,26 @@ ENDM
     PSECT main_code, class=CODE, reloc=2 ;Codigo principal
 
     Inicio:
+
  MOVLW 0b01110010 ;Configurar reloj a 8Mhz
  MOVWF OSCCON
 
- CLRF TRISB ;Configuta PORTB como salida
+ MOVLW 0B00010000
+ MOVWF TRISB ;Configuta PORTB como salida
  CLRF LATB ;PORTB en 0
 
+    Boton_Loop:
+
+ BTFSC PORTB, 4
+ GOTO Apagar_Leds
  ;CALL Secuencia1
  CALL Secuencia2
  ;CALL Secuencia3
- GOTO $ ;Saltar a la direccion actual (se queda en el buclee actual)
+ GOTO Boton_Loop ;Saltar a revisar si el boton esta presionado
+
+    Apagar_Leds:
+ CLRF LATB
+ GOTO Boton_Loop
 
     ;Secuencia1:
  ;MOVLW 0b00000001
@@ -5524,7 +5534,7 @@ ENDM
 
  CLRF LATB
  CALL Retardo_1s
- GOTO Secuencia2
+ RETURN
 
     ;Secuencia3:
  ;MOVLW 0b00000101
