@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=Secuencias_Led_Plan_a.X
+PROJECTNAME=Secuencias_Led_Plan_A.X
 
 # Active Configuration
 DEFAULTCONF=default

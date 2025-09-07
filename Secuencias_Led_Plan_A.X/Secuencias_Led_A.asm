@@ -1,14 +1,14 @@
 ;==============================================================
 ;Secuencia_Led_A Codio para PIC18F4550
-;3 Secuencias distintas y 25 leds casi todos los puertos XD
+;3 Secuencias distintas ,25 leds Y 1 Boton en RE0
 ;Oscilador interno de 8MHz
 ;==============================================================
 ;configuracion de Matriz 5x5
 ;Fila 1: RA0, RA1, RA2, RA3, RA4
 ;Fila 2: RA5, RA6, RB0, RB1, RB2
 ;Fila 3: RB3, RB4, RB5, RB6, RB7
-;Fila 4: RC0, RC1, RC2, RC4, RC5
-;Fila 5: RC6, RC7, RD0, RD1, RD2
+;Fila 4: RC0, RC1, RC2, RD4, RC5
+;Fila 5: RC6, RC7, RD5, RD6, RD7 
 ;==============================================================
     
 ;Configuracion de bits para PIC18F4550
@@ -83,7 +83,7 @@
 	BSF LATC, 7
 	BCF LATD, 0
 	BSF LATD, 1
-	BCF LATD, 2
+	BCF LATD, 3
 ;------------------------------------------------------
 ; Subrutina Retardo de 1 segundo
 ;------------------------------------------------------

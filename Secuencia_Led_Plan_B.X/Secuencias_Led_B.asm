@@ -1,8 +1,8 @@
-;===============================================
+;=================================================================
 ;Secuencia_Led_B Codio para PIC18F4550
-;3 Secuencias distintas y 4 leds en RB0 - RB3
+;3 Secuencias distintas, 4 leds en RB0 - RB3 y 1 Boton en RB4
 ;Oscilador interno de 8MHz
-;===============================================
+;=================================================================
     
 ;Configuracion de bits para PIC18F4550
     
