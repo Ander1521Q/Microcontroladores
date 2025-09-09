@@ -8,7 +8,7 @@
   CONFIG  FOSC = INTOSC_EC      ;Utilizar oscilador interno de 8MHz
   CONFIG  WDT = OFF             ;Desactiva el Watchdog timer 
   CONFIG  PBADEN = OFF          ;Configura los PORTB como digitales
-  CONFIG  LVP = OFF             ; Desactiva la programacion a bajo voltage
+  CONFIG  LVP = OFF             ;Desactiva la programacion a bajo voltage
 
   
 ;Incluir definiciones para el PIC18F4550

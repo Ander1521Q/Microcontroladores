@@ -53,6 +53,230 @@
 	
 	GOTO LoopPrincipal
 	
+    Letra_H:
+	; --- FILA 1:01010
+	BCF LATA, 0 ;apagado RA0
+	BSF LATA, 1 ;Encendido RA1
+	BCF LATA, 2
+	BSF LATA, 3
+	BCF LATA, 4
+	; --- FILA 2:01010
+	BCF LATA, 5
+	BSF LATA, 6
+	BCF LATB, 0
+	BSF LATB, 1
+	BCF LATB, 2
+	; --- FILA 3:01110
+	BCF LATB, 3
+	BSF LATB, 4
+	BSF LATB, 5
+	BSF LATB, 6
+	BCF LATB, 7
+	; --- FILA 4:01010
+	BCF LATC, 0
+	BSF LATC, 1
+	BCF LATC, 2
+	BSF LATC, 4
+	BCF LATC, 5
+	; --- FILA 5:01010
+	BCF LATC, 6
+	BSF LATC, 7
+	BCF LATD, 0
+	BSF LATD, 1
+	BCF LATD, 3
+	
+    Letra_H1:
+	; --- FILA 1:10101
+	BCF LATA, 0 ;apagado RA0
+	BSF LATA, 1 ;Encendido RA1
+	BCF LATA, 2
+	BSF LATA, 3
+	BCF LATA, 4
+	; --- FILA 2:10101
+	BCF LATA, 5
+	BSF LATA, 6
+	BCF LATB, 0
+	BSF LATB, 1
+	BCF LATB, 2
+	; --- FILA 3:11101
+	BCF LATB, 3
+	BSF LATB, 4
+	BSF LATB, 5
+	BSF LATB, 6
+	BCF LATB, 7
+	; --- FILA 4:10101
+	BCF LATC, 0
+	BSF LATC, 1
+	BCF LATC, 2
+	BSF LATC, 4
+	BCF LATC, 5
+	; --- FILA 5:10101
+	BCF LATC, 6
+	BSF LATC, 7
+	BCF LATD, 0
+	BSF LATD, 1
+	BCF LATD, 3
+	
+    Letra_H2:
+	; --- FILA 1:01011
+	BCF LATA, 0 ;apagado RA0
+	BSF LATA, 1 ;Encendido RA1
+	BCF LATA, 2
+	BSF LATA, 3
+	BCF LATA, 4
+	; --- FILA 2:01010
+	BCF LATA, 5
+	BSF LATA, 6
+	BCF LATB, 0
+	BSF LATB, 1
+	BCF LATB, 2
+	; --- FILA 3:11010
+	BCF LATB, 3
+	BSF LATB, 4
+	BSF LATB, 5
+	BSF LATB, 6
+	BCF LATB, 7
+	; --- FILA 4:01010
+	BCF LATC, 0
+	BSF LATC, 1
+	BCF LATC, 2
+	BSF LATC, 4
+	BCF LATC, 5
+	; --- FILA 5:01011
+	BCF LATC, 6
+	BSF LATC, 7
+	BCF LATD, 0
+	BSF LATD, 1
+	BCF LATD, 3
+	
+    Letra_H3:
+	; --- FILA 1:10111
+	BCF LATA, 0 ;apagado RA0
+	BSF LATA, 1 ;Encendido RA1
+	BCF LATA, 2
+	BSF LATA, 3
+	BCF LATA, 4
+	; --- FILA 2:10100
+	BCF LATA, 5
+	BSF LATA, 6
+	BCF LATB, 0
+	BSF LATB, 1
+	BCF LATB, 2
+	; --- FILA 3:10100
+	BCF LATB, 3
+	BSF LATB, 4
+	BSF LATB, 5
+	BSF LATB, 6
+	BCF LATB, 7
+	; --- FILA 4:10100
+	BCF LATC, 0
+	BSF LATC, 1
+	BCF LATC, 2
+	BSF LATC, 4
+	BCF LATC, 5
+	; --- FILA 5:10111
+	BCF LATC, 6
+	BSF LATC, 7
+	BCF LATD, 0
+	BSF LATD, 1
+	BCF LATD, 3
+	
+    Letra_O:
+	; --- FILA 1:01111
+	BCF LATA, 0 ;apagado RA0
+	BSF LATA, 1 ;Encendido RA1
+	BSF LATA, 2
+	BSF LATA, 3
+	BCF LATA, 4
+	; --- FILA 2:01001
+	BCF LATA, 5
+	BSF LATA, 6
+	BCF LATB, 0
+	BSF LATB, 1
+	BCF LATB, 2
+	; --- FILA 3:01001
+	BCF LATB, 3
+	BSF LATB, 4
+	BSF LATB, 5
+	BSF LATB, 6
+	BCF LATB, 7
+	; --- FILA 4:01001
+	BCF LATC, 0
+	BSF LATC, 1
+	BCF LATC, 2
+	BSF LATC, 4
+	BCF LATC, 5
+	; --- FILA 5:01111
+	BCF LATC, 6
+	BSF LATC, 7
+	BCF LATD, 0
+	BSF LATD, 1
+	BCF LATD, 3
+	
+    Letra_O1:
+	; --- FILA 1:11110
+	BCF LATA, 0 ;apagado RA0
+	BSF LATA, 1 ;Encendido RA1
+	BSF LATA, 2
+	BSF LATA, 3
+	BCF LATA, 4
+	; --- FILA 2:10010
+	BCF LATA, 5
+	BSF LATA, 6
+	BCF LATB, 0
+	BSF LATB, 1
+	BCF LATB, 2
+	; --- FILA 3:10010
+	BCF LATB, 3
+	BSF LATB, 4
+	BSF LATB, 5
+	BSF LATB, 6
+	BCF LATB, 7
+	; --- FILA 4:10010
+	BCF LATC, 0
+	BSF LATC, 1
+	BCF LATC, 2
+	BSF LATC, 4
+	BCF LATC, 5
+	; --- FILA 5:11110
+	BCF LATC, 6
+	BSF LATC, 7
+	BCF LATD, 0
+	BSF LATD, 1
+	BCF LATD, 3
+	
+    Letra_L:
+	; --- FILA 1:01000
+	BCF LATA, 0 ;apagado RA0
+	BSF LATA, 1 ;Encendido RA1
+	BSF LATA, 2
+	BSF LATA, 3
+	BCF LATA, 4
+	; --- FILA 2:01000
+	BCF LATA, 5
+	BSF LATA, 6
+	BCF LATB, 0
+	BSF LATB, 1
+	BCF LATB, 2
+	; --- FILA 3:01000
+	BCF LATB, 3
+	BSF LATB, 4
+	BSF LATB, 5
+	BSF LATB, 6
+	BCF LATB, 7
+	; --- FILA 4:01000
+	BCF LATC, 0
+	BSF LATC, 1
+	BCF LATC, 2
+	BSF LATC, 4
+	BCF LATC, 5
+	; --- FILA 5:01110
+	BCF LATC, 6
+	BSF LATC, 7
+	BCF LATD, 0
+	BSF LATD, 1
+	BCF LATD, 3
+	
     Letra_A:
 	; --- FILA 1:01110
 	BCF LATA, 0 ;apagado RA0
@@ -112,10 +336,38 @@
 
 	RETURN
 	
+;------------------------------------------------------
+; Subrutina Retardo de 250ms segundo
+;------------------------------------------------------
+    Retardo_250ms:
+	MOVLW 2
+	MOVWF ContadorExterno
+
+    LoopExterno250:
+	MOVLW 200
+	MOVWF ContadorMedio
+
+    LoopMedio250:
+	MOVLW 250
+	MOVWF ContadorInterno
+
+    LoopInterno250:
+	;NOP
+	NOP
+	NOP
+	DECFSZ ContadorInterno, F
+	GOTO LoopInterno250
+	DECFSZ ContadorMedio, F
+	GOTO LoopMedio250
+	DECFSZ ContadorExterno, F
+	GOTO LoopExterno250
+
+	RETURN  
+	
 	
     PSECT udata ;Deficnion de variables
       ContadorExterno: DS 1
       ContadorMedio:   DS 1
       ContadorInterno: DS 1
 
-    END
+    END  

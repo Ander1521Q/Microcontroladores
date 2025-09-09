@@ -13,10 +13,10 @@
 
 ;Configuracion de bits para PIC18F4550
 
-  CONFIG FOSC = INTOSC_EC ; Oscillator Selection bits (Internal oscillator, CLKO function on RA6, EC used by USB (INTCKO))
-  CONFIG WDT = OFF ; Watchdog Timer Enable bit (WDT disabled (control is placed on the SWDTEN bit)
-  CONFIG PBADEN = OFF ; PORTB A/D Enable bit (PORTB<4:0> pins are configured as digital I/O on Reset)
-  CONFIG LVP = OFF ; Single-Supply ICSP Enable bit (Single-Supply ICSP disabled)
+  CONFIG FOSC = INTOSC_EC ;Utilizar oscilador interno de 8MHz
+  CONFIG WDT = OFF ;Desactiva el watchdog timer
+  CONFIG PBADEN = OFF ;Configura los portB como digitales
+  CONFIG LVP = OFF ;Desactiva la programacion a bajo voltaje
 
 ;Incluir definiciones para el PIC18F4550
 # 1 "C:\\Program Files\\Microchip\\xc8\\v3.00\\pic\\include/xc.inc" 1 3
@@ -5475,14 +5475,39 @@ ENDM
 
     Boton_Loop:
 
- GOTO Secuencia1
+ GOTO Secuencia1 ;Comienza ejecutando la primera secuencia
 
     Secuencia1:
+ ;Secuencia tipo cascada
+ MOVLW 0b00001000 ;Arreglo de bits para encender los leds
+ MOVWF LATB
+ CALL Retardo_500ms ;Retraso de 500ms
+
+ MOVLW 0b00000100
+ MOVWF LATB
+ CALL Retardo_500ms
+
+ MOVLW 0b00000010
+ MOVWF LATB
+ CALL Retardo_500ms
+
  MOVLW 0b00000001
  MOVWF LATB
  CALL Retardo_500ms
 
+ MOVLW 0b00001001
+ MOVWF LATB
+ CALL Retardo_500ms
+
+ MOVLW 0b00000101
+ MOVWF LATB
+ CALL Retardo_500ms
+
  MOVLW 0b00000011
+ MOVWF LATB
+ CALL Retardo_500ms
+
+ MOVLW 0b00001011
  MOVWF LATB
  CALL Retardo_500ms
 
@@ -5494,14 +5519,15 @@ ENDM
  MOVWF LATB
  CALL Retardo_500ms
 
- CLRF LATB
+ CLRF LATB ;Apaga todos los leds
  CALL Retardo_500ms
 
- BTFSS PORTB, 4
- GOTO Secuencia1
- GOTO Secuencia2
+ BTFSS PORTB, 4 ;Revisa el boton en ((PORTB) and 0FFh), 4, a
+ GOTO Secuencia1 ;Si no esta presionado, repite secuencia1
+ GOTO Secuencia2 ;Si esta presionado, se va a secuencia2
 
     Secuencia2:
+ ;Secuencia tipo ida y vuelta
  MOVLW 0b00000001
  MOVWF LATB
  CALL Retardo_500ms
@@ -5534,6 +5560,7 @@ ENDM
  GOTO Secuencia3
 
     Secuencia3:
+        ;Secuencia alternadora
  MOVLW 0b00000101
  MOVWF LATB
  CALL Retardo_500ms
@@ -5595,7 +5622,7 @@ ENDM
 
     LoopInterno500:
  ;NOP
- NOP
+ NOP ;consume un ciclo
  NOP
  DECFSZ ContadorInterno, F
  GOTO LoopInterno500
@@ -5608,7 +5635,7 @@ ENDM
 
 
     PSECT udata ;Deficnion de variables
- ContadorExterno: DS 1
+ ContadorExterno: DS 1 ;Variable para bucle externo del retardo
  ContadorMedio: DS 1
  ContadorInterno: DS 1
 
