@@ -5,11 +5,11 @@
 # 1 "<command line>" 1
 # 1 "<built-in>" 2
 # 1 "Secuencias_Led_B.asm" 2
-;===============================================
+;=================================================================
 ;Secuencia_Led_B Codio para PIC18F4550
-;3 Secuencias distintas y 4 leds en RB0 - RB3
+;3 Secuencias distintas, 4 leds en RB0 - RB3 y 1 Boton en RB4
 ;Oscilador interno de 8MHz
-;===============================================
+;=================================================================
 
 ;Configuracion de bits para PIC18F4550
 
@@ -5475,79 +5475,79 @@ ENDM
 
     Boton_Loop:
 
- BTFSC PORTB, 4
- GOTO Apagar_Leds
- ;CALL Secuencia1
- CALL Secuencia2
- ;CALL Secuencia3
- GOTO Boton_Loop ;Saltar a revisar si el boton esta presionado
+ GOTO Secuencia1
 
-    Apagar_Leds:
+    Secuencia1:
+ MOVLW 0b00000001
+ MOVWF LATB
+ CALL Retardo_500ms
+
+ MOVLW 0b00000011
+ MOVWF LATB
+ CALL Retardo_500ms
+
+ MOVLW 0b00000111
+ MOVWF LATB
+ CALL Retardo_500ms
+
+ MOVLW 0b00001111
+ MOVWF LATB
+ CALL Retardo_500ms
+
  CLRF LATB
- GOTO Boton_Loop
+ CALL Retardo_500ms
 
-    ;Secuencia1:
- ;MOVLW 0b00000001
- ;MOVWF LATB
- ;CALL Retardo_1s
-
- ;MOVLW 0b00000011
- ;MOVWF LATB
- ;CALL Retardo_1s
-
- ;MOVLW 0b00000111
- ;MOVWF LATB
- ;CALL Retardo_1s
-
- ;MOVLW 0b00001111
- ;MOVWF LATB
- ;CALL Retardo_1s
-
- ;CLRF LATB
- ;CALL Retardo_1s
- ;GOTO Secuencia1
+ BTFSS PORTB, 4
+ GOTO Secuencia1
+ GOTO Secuencia2
 
     Secuencia2:
  MOVLW 0b00000001
  MOVWF LATB
- CALL Retardo_1s
+ CALL Retardo_500ms
 
  MOVLW 0b00000010
  MOVWF LATB
- CALL Retardo_1s
+ CALL Retardo_500ms
 
  MOVLW 0b00000100
  MOVWF LATB
- CALL Retardo_1s
+ CALL Retardo_500ms
 
  MOVLW 0b00001000
  MOVWF LATB
- CALL Retardo_1s
+ CALL Retardo_500ms
 
  MOVLW 0b00000100
  MOVWF LATB
- CALL Retardo_1s
+ CALL Retardo_500ms
 
  MOVLW 0b00000010
  MOVWF LATB
- CALL Retardo_1s
+ CALL Retardo_500ms
 
  CLRF LATB
- CALL Retardo_1s
- RETURN
+ CALL Retardo_500ms
 
-    ;Secuencia3:
- ;MOVLW 0b00000101
- ;MOVWF LATB
- ;CALL Retardo_1s
+ BTFSS PORTB, 4
+ GOTO Secuencia2
+ GOTO Secuencia3
 
- ;MOVLW 0b00001010
- ;MOVWF LATB
- ;CALL Retardo_1s
+    Secuencia3:
+ MOVLW 0b00000101
+ MOVWF LATB
+ CALL Retardo_500ms
 
- ;CLRF LATB
- ;CALL Retardo_1s
- ;GOTO Secuencia3
+ MOVLW 0b00001010
+ MOVWF LATB
+ CALL Retardo_500ms
+
+ CLRF LATB
+ CALL Retardo_500ms
+
+ BTFSS PORTB, 4
+ GOTO Secuencia3
+ GOTO Secuencia1
 
 
 ;------------------------------------------------------
@@ -5566,7 +5566,7 @@ ENDM
  MOVWF ContadorInterno
 
     LoopInterno:
- NOP
+ ;NOP
  NOP
  NOP
  DECFSZ ContadorInterno, F
@@ -5578,10 +5578,38 @@ ENDM
 
  RETURN
 
+;------------------------------------------------------
+; Subrutina Retardo de 500ms segundo
+;------------------------------------------------------
+    Retardo_500ms:
+ MOVLW 4
+ MOVWF ContadorExterno
+
+    LoopExterno500:
+ MOVLW 200
+ MOVWF ContadorMedio
+
+    LoopMedio500:
+ MOVLW 250
+ MOVWF ContadorInterno
+
+    LoopInterno500:
+ ;NOP
+ NOP
+ NOP
+ DECFSZ ContadorInterno, F
+ GOTO LoopInterno500
+ DECFSZ ContadorMedio, F
+ GOTO LoopMedio500
+ DECFSZ ContadorExterno, F
+ GOTO LoopExterno500
+
+ RETURN
+
 
     PSECT udata ;Deficnion de variables
-      ContadorExterno: DS 1
-      ContadorMedio: DS 1
-      ContadorInterno: DS 1
+ ContadorExterno: DS 1
+ ContadorMedio: DS 1
+ ContadorInterno: DS 1
 
     END

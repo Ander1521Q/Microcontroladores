@@ -1,7 +1,7 @@
 ### HEXMate logfile and output summary ###
 
 ### Command-line arguments ###
- C:\Users\ANDER\AppData\Local\Temp\xcAseo0.\driver_tmp_3.o
+ C:\Users\ANDER\AppData\Local\Temp\xcAs50c.\driver_tmp_3.o
  -Odist/default/debug\Secuencia_Led_Plan_B.X.debug.hex
  -logfile=dist/default/debug\Secuencia_Led_Plan_B.X.debug.hxl
  -addressing=1
@@ -9,12 +9,12 @@
 
 ### Memory Usage ###
  Input file ranges:
-  7F80h - 7FFFh		(C:\Users\ANDER\AppData\Local\Temp\xcAseo0.\driver_tmp_3.o)
-  300000h - 300003h		(C:\Users\ANDER\AppData\Local\Temp\xcAseo0.\driver_tmp_3.o)
-  300005h - 300006h		(C:\Users\ANDER\AppData\Local\Temp\xcAseo0.\driver_tmp_3.o)
-  300008h - 30000Dh		(C:\Users\ANDER\AppData\Local\Temp\xcAseo0.\driver_tmp_3.o)
+  7F16h - 7FFFh		(C:\Users\ANDER\AppData\Local\Temp\xcAs50c.\driver_tmp_3.o)
+  300000h - 300003h		(C:\Users\ANDER\AppData\Local\Temp\xcAs50c.\driver_tmp_3.o)
+  300005h - 300006h		(C:\Users\ANDER\AppData\Local\Temp\xcAs50c.\driver_tmp_3.o)
+  300008h - 30000Dh		(C:\Users\ANDER\AppData\Local\Temp\xcAs50c.\driver_tmp_3.o)
  Unused ranges:
-  0h - 7F7Fh
+  0h - 7F15h
   8000h - 2FFFFFh
   300004h - 300004h
   300007h - 300007h
@@ -22,10 +22,17 @@
 ### Hex Memory Map ###
  Legend:
   -- = Unused memory
-  H1 = Input file             (C:\Users\ANDER\AppData\Local\Temp\xcAseo0.\driver_tmp_3.o)
+  H1 = Input file             (C:\Users\ANDER\AppData\Local\Temp\xcAs50c.\driver_tmp_3.o)
 ----------------------------------------------------------
          | 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
 ----------------------------------------------------------
+00007F10 | -- -- -- -- -- -- H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00007F20 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00007F30 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00007F40 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00007F50 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00007F60 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00007F70 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 00007F80 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 00007F90 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 00007FA0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
