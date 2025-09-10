@@ -7,15 +7,15 @@
 # 1 "Secuencias_Led_A.asm" 2
 ;==============================================================
 ;Secuencia_Led_A Codio para PIC18F4550
-;3 Secuencias distintas y 25 leds casi todos los puertos XD
+;3 Secuencias distintas ,25 leds Y 1 Boton en RE0
 ;Oscilador interno de 8MHz
 ;==============================================================
 ;configuracion de Matriz 5x5
 ;Fila 1: RA0, RA1, RA2, RA3, RA4
 ;Fila 2: RA5, RA6, RB0, RB1, RB2
 ;Fila 3: RB3, RB4, RB5, RB6, RB7
-;Fila 4: RC0, RC1, RC2, RC4, RC5
-;Fila 5: RC6, RC7, RD0, RD1, RD2
+;Fila 4: RC0, RC1, RC2, RD4, RC5
+;Fila 5: RC6, RC7, RD5, RD6, RD7
 ;==============================================================
 
 ;Configuracion de bits para PIC18F4550
@@ -5485,22 +5485,588 @@ ENDM
  CLRF LATC
  CLRF LATD
 
-    LoopPrincipal:
+    Boton_Loop:
+
+ GOTO LoopHola ;Comienza ejecutando la primera secuencia de palabra
+
+    LoopHola:
+ ;Secuencia de ejecucion de la palabra HOLA
+ CALL Letra_H
+ CALL Retardo_1s
+ CALL Apagar_Leds
+ CALL Letra_H1
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+ CALL Letra_H2
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+ CALL Letra_H3
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+ CALL Letra_O
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+ CALL Letra_O1
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+ CALL Letra_O2
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+ CALL Letra_O3
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+ CALL Letra_O4
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+ CALL Letra_L
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+ CALL Letra_L1
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+ CALL Letra_L2
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+ CALL Letra_L3
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+ CALL Letra_L4
+ CALL Retardo_250ms
+ CALL Apagar_Leds
  CALL Letra_A
  CALL Retardo_1s
+ CALL Apagar_Leds
 
- CLRF LATA
+ BTFSS PORTB, 4
+ GOTO LoopHola
+ GOTO LoopLeo
+
+    LoopLeo:
+
+ CALL Letra2_L
+ CALL Retardo_1s
+ CALL Apagar_Leds
+ CALL Letra2_L1
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+ CALL Letra2_L3
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+ CALL Letra2_L4
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+ CALL Letra2_E
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+ CALL Letra2_E1
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+ CALL Letra2_E2
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+ CALL Letra2_E3
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+ CALL Letra2_O
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+ CALL Letra2_O1
+ CALL Retardo_250ms
+ CALL Apagar_Leds
+
+ BTFSS PORTB, 4
+ GOTO LoopLeo
+ GOTO LoopHola
+
+    Apagar_Leds:
+ ;apaga todos los leds
+ CLRF LATA ;PORTA en 0
  CLRF LATB
  CLRF LATC
  CLRF LATD
- CALL Retardo_1s
 
- GOTO LoopPrincipal
+ RETURN
+
+    Letra_H:
+ ; --- FILA 1:01010
+ BCF LATA, 0 ;apagado ((PORTA) and 0FFh), 0, a
+ BSF LATA, 1 ;Encendido ((PORTA) and 0FFh), 1, a
+ BCF LATA, 2
+ BSF LATA, 3
+ BCF LATA, 4
+ ; --- FILA 2:01010
+ BCF LATA, 5
+ BSF LATA, 6
+ BCF LATB, 0
+ BSF LATB, 1
+ BCF LATB, 2
+ ; --- FILA 3:01110
+ BCF LATB, 3
+ BSF LATB, 4
+ BSF LATB, 5
+ BSF LATB, 6
+ BCF LATB, 7
+ ; --- FILA 4:01010
+ BCF LATC, 0
+ BSF LATC, 1
+ BCF LATC, 2
+ BSF LATD, 4
+ BCF LATC, 5
+ ; --- FILA 5:01010
+ BCF LATC, 6
+ BSF LATC, 7
+ BCF LATD, 5
+ BSF LATD, 6
+ BCF LATD, 7
+
+ RETURN
+
+    Letra_H1:
+ ; --- FILA 1:10101
+ BSF LATA, 0
+ BCF LATA, 1
+ BSF LATA, 2
+ BCF LATA, 3
+ BSF LATA, 4
+ ; --- FILA 2:10101
+ BSF LATA, 5
+ BCF LATA, 6
+ BSF LATB, 0
+ BCF LATB, 1
+ BSF LATB, 2
+ ; --- FILA 3:11101
+ BSF LATB, 3
+ BSF LATB, 4
+ BSF LATB, 5
+ BCF LATB, 6
+ BSF LATB, 7
+ ; --- FILA 4:10101
+ BSF LATC, 0
+ BCF LATC, 1
+ BSF LATC, 2
+ BCF LATD, 4
+ BSF LATC, 5
+ ; --- FILA 5:10101
+ BSF LATC, 6
+ BCF LATC, 7
+ BSF LATD, 5
+ BCF LATD, 6
+ BSF LATD, 7
+
+ RETURN
+
+    Letra_H2:
+ ; --- FILA 1:01011
+ BCF LATA, 0
+ BSF LATA, 1
+ BCF LATA, 2
+ BSF LATA, 3
+ BSF LATA, 4
+ ; --- FILA 2:01010
+ BCF LATA, 5
+ BSF LATA, 6
+ BCF LATB, 0
+ BSF LATB, 1
+ BCF LATB, 2
+ ; --- FILA 3:11010
+ BSF LATB, 3
+ BSF LATB, 4
+ BCF LATB, 5
+ BSF LATB, 6
+ BCF LATB, 7
+ ; --- FILA 4:01010
+ BCF LATC, 0
+ BSF LATC, 1
+ BCF LATC, 2
+ BSF LATD, 4
+ BCF LATC, 5
+ ; --- FILA 5:01011
+ BCF LATC, 6
+ BSF LATC, 7
+ BCF LATD, 5
+ BSF LATD, 6
+ BSF LATD, 7
+
+ RETURN
+
+    Letra_H3:
+ ; --- FILA 1:10111
+ BSF LATA, 0
+ BCF LATA, 1
+ BSF LATA, 2
+ BSF LATA, 3
+ BSF LATA, 4
+ ; --- FILA 2:10100
+ BSF LATA, 5
+ BCF LATA, 6
+ BSF LATB, 0
+ BCF LATB, 1
+ BCF LATB, 2
+ ; --- FILA 3:10100
+ BSF LATB, 3
+ BCF LATB, 4
+ BSF LATB, 5
+ BCF LATB, 6
+ BCF LATB, 7
+ ; --- FILA 4:10100
+ BSF LATC, 0
+ BCF LATC, 1
+ BSF LATC, 2
+ BCF LATD, 4
+ BCF LATC, 5
+ ; --- FILA 5:10111
+ BSF LATC, 6
+ BCF LATC, 7
+ BSF LATD, 5
+ BSF LATD, 6
+ BSF LATD, 7
+
+ RETURN
+
+    Letra_O:
+ ; --- FILA 1:01111
+ BCF LATA, 0
+ BSF LATA, 1
+ BSF LATA, 2
+ BSF LATA, 3
+ BSF LATA, 4
+ ; --- FILA 2:01001
+ BCF LATA, 5
+ BSF LATA, 6
+ BCF LATB, 0
+ BCF LATB, 1
+ BSF LATB, 2
+ ; --- FILA 3:01001
+ BCF LATB, 3
+ BSF LATB, 4
+ BCF LATB, 5
+ BCF LATB, 6
+ BSF LATB, 7
+ ; --- FILA 4:01001
+ BCF LATC, 0
+ BSF LATC, 1
+ BCF LATC, 2
+ BCF LATD, 4
+ BSF LATC, 5
+ ; --- FILA 5:01111
+ BCF LATC, 6
+ BSF LATC, 7
+ BSF LATD, 5
+ BSF LATD, 6
+ BSF LATD, 7
+
+ RETURN
+
+    Letra_O1:
+ ; --- FILA 1:11110
+ BSF LATA, 0
+ BSF LATA, 1
+ BSF LATA, 2
+ BSF LATA, 3
+ BCF LATA, 4
+ ; --- FILA 2:10010
+ BSF LATA, 5
+ BCF LATA, 6
+ BCF LATB, 0
+ BSF LATB, 1
+ BCF LATB, 2
+ ; --- FILA 3:10010
+ BSF LATB, 3
+ BCF LATB, 4
+ BCF LATB, 5
+ BSF LATB, 6
+ BCF LATB, 7
+ ; --- FILA 4:10010
+ BSF LATC, 0
+ BCF LATC, 1
+ BCF LATC, 2
+ BSF LATD, 4
+ BCF LATC, 5
+ ; --- FILA 5:11110
+ BSF LATC, 6
+ BSF LATC, 7
+ BSF LATD, 5
+ BSF LATD, 6
+ BCF LATD, 7
+
+ RETURN
+
+    Letra_O2:
+ ; --- FILA 1:11101
+ BSF LATA, 0
+ BSF LATA, 1
+ BSF LATA, 2
+ BCF LATA, 3
+ BSF LATA, 4
+ ; --- FILA 2:00101
+ BCF LATA, 5
+ BCF LATA, 6
+ BSF LATB, 0
+ BCF LATB, 1
+ BSF LATB, 2
+ ; --- FILA 3:00101
+ BCF LATB, 3
+ BCF LATB, 4
+ BSF LATB, 5
+ BCF LATB, 6
+ BSF LATB, 7
+ ; --- FILA 4:00101
+ BCF LATC, 0
+ BCF LATC, 1
+ BSF LATC, 2
+ BCF LATD, 4
+ BSF LATC, 5
+ ; --- FILA 5:11101
+ BSF LATC, 6
+ BSF LATC, 7
+ BSF LATD, 5
+ BCF LATD, 6
+ BSF LATD, 7
+
+ RETURN
+
+    Letra_O3:
+ ; --- FILA 1:11010
+ BSF LATA, 0
+ BSF LATA, 1
+ BCF LATA, 2
+ BSF LATA, 3
+ BCF LATA, 4
+ ; --- FILA 2:01010
+ BCF LATA, 5
+ BSF LATA, 6
+ BCF LATB, 0
+ BSF LATB, 1
+ BCF LATB, 2
+ ; --- FILA 3:01010
+ BCF LATB, 3
+ BSF LATB, 4
+ BCF LATB, 5
+ BSF LATB, 6
+ BCF LATB, 7
+ ; --- FILA 4:01010
+ BCF LATC, 0
+ BSF LATC, 1
+ BCF LATC, 2
+ BSF LATD, 4
+ BCF LATC, 5
+ ; --- FILA 5:11011
+ BSF LATC, 6
+ BSF LATC, 7
+ BCF LATD, 5
+ BSF LATD, 6
+ BSF LATD, 7
+
+ RETURN
+
+    Letra_O4:
+ ; --- FILA 1:10100
+ BSF LATA, 0
+ BCF LATA, 1
+ BSF LATA, 2
+ BCF LATA, 3
+ BCF LATA, 4
+ ; --- FILA 2:10100
+ BSF LATA, 5
+ BCF LATA, 6
+ BSF LATB, 0
+ BCF LATB, 1
+ BCF LATB, 2
+ ; --- FILA 3:10100
+ BSF LATB, 3
+ BCF LATB, 4
+ BSF LATB, 5
+ BCF LATB, 6
+ BCF LATB, 7
+ ; --- FILA 4:10100
+ BSF LATC, 0
+ BCF LATC, 1
+ BSF LATC, 2
+ BCF LATD, 4
+ BCF LATC, 5
+ ; --- FILA 5:10111
+ BSF LATC, 6
+ BCF LATC, 7
+ BSF LATD, 5
+ BSF LATD, 6
+ BSF LATD, 7
+
+ RETURN
+
+    Letra_L:
+ ; --- FILA 1:01000
+ BCF LATA, 0
+ BSF LATA, 1
+ BCF LATA, 2
+ BCF LATA, 3
+ BCF LATA, 4
+ ; --- FILA 2:01000
+ BCF LATA, 5
+ BSF LATA, 6
+ BCF LATB, 0
+ BCF LATB, 1
+ BCF LATB, 2
+ ; --- FILA 3:01000
+ BCF LATB, 3
+ BSF LATB, 4
+ BCF LATB, 5
+ BCF LATB, 6
+ BCF LATB, 7
+ ; --- FILA 4:01000
+ BCF LATC, 0
+ BSF LATC, 1
+ BCF LATC, 2
+ BCF LATD, 4
+ BCF LATC, 5
+ ; --- FILA 5:01110
+ BCF LATC, 6
+ BSF LATC, 7
+ BSF LATD, 5
+ BSF LATD, 6
+ BCF LATD, 7
+
+ RETURN
+
+    Letra_L1:
+ ; --- FILA 1:10000
+ BSF LATA, 0
+ BCF LATA, 1
+ BCF LATA, 2
+ BCF LATA, 3
+ BCF LATA, 4
+ ; --- FILA 2:10000
+ BSF LATA, 5
+ BCF LATA, 6
+ BCF LATB, 0
+ BCF LATB, 1
+ BCF LATB, 2
+ ; --- FILA 3:10000
+ BSF LATB, 3
+ BCF LATB, 4
+ BCF LATB, 5
+ BCF LATB, 6
+ BCF LATB, 7
+ ; --- FILA 4:10000
+ BSF LATC, 0
+ BCF LATC, 1
+ BCF LATC, 2
+ BCF LATD, 4
+ BCF LATC, 5
+ ; --- FILA 5:11100
+ BSF LATC, 6
+ BSF LATC, 7
+ BSF LATD, 5
+ BCF LATD, 6
+ BCF LATD, 7
+
+ RETURN
+
+    Letra_L2:
+ ; --- FILA 1:00001
+ BCF LATA, 0
+ BCF LATA, 1
+ BCF LATA, 2
+ BCF LATA, 3
+ BSF LATA, 4
+ ; --- FILA 2:00001
+ BCF LATA, 5
+ BCF LATA, 6
+ BCF LATB, 0
+ BCF LATB, 1
+ BSF LATB, 2
+ ; --- FILA 3:00001
+ BCF LATB, 3
+ BCF LATB, 4
+ BCF LATB, 5
+ BCF LATB, 6
+ BSF LATB, 7
+ ; --- FILA 4:00001
+ BCF LATC, 0
+ BCF LATC, 1
+ BCF LATC, 2
+ BCF LATD, 4
+ BSF LATC, 5
+ ; --- FILA 5:11001
+ BSF LATC, 6
+ BSF LATC, 7
+ BCF LATD, 5
+ BCF LATD, 6
+ BSF LATD, 7
+
+ RETURN
+
+    Letra_L3:
+ ; --- FILA 1:00011
+ BCF LATA, 0
+ BCF LATA, 1
+ BCF LATA, 2
+ BSF LATA, 3
+ BSF LATA, 4
+ ; --- FILA 2:00010
+ BCF LATA, 5
+ BCF LATA, 6
+ BCF LATB, 0
+ BSF LATB, 1
+ BCF LATB, 2
+ ; --- FILA 3:00011
+ BCF LATB, 3
+ BCF LATB, 4
+ BCF LATB, 5
+ BSF LATB, 6
+ BSF LATB, 7
+ ; --- FILA 4:00010
+ BCF LATC, 0
+ BCF LATC, 1
+ BCF LATC, 2
+ BSF LATD, 4
+ BCF LATC, 5
+ ; --- FILA 5:10010
+ BSF LATC, 6
+ BCF LATC, 7
+ BCF LATD, 5
+ BSF LATD, 6
+ BCF LATD, 7
+
+ RETURN
+
+    Letra_L4:
+ ; --- FILA 1:00111
+ BCF LATA, 0
+ BCF LATA, 1
+ BSF LATA, 2
+ BSF LATA, 3
+ BSF LATA, 4
+ ; --- FILA 2:00101
+ BCF LATA, 5
+ BCF LATA, 6
+ BSF LATB, 0
+ BCF LATB, 1
+ BSF LATB, 2
+ ; --- FILA 3:00111
+ BCF LATB, 3
+ BCF LATB, 4
+ BSF LATB, 5
+ BSF LATB, 6
+ BSF LATB, 7
+ ; --- FILA 4:00101
+ BCF LATC, 0
+ BCF LATC, 1
+ BSF LATC, 2
+ BCF LATD, 4
+ BSF LATC, 5
+ ; --- FILA 5:00101
+ BCF LATC, 6
+ BCF LATC, 7
+ BSF LATD, 5
+ BCF LATD, 6
+ BSF LATD, 7
+
+ RETURN
 
     Letra_A:
  ; --- FILA 1:01110
- BCF LATA, 0 ;apagado ((PORTA) and 0FFh), 0, a
- BSF LATA, 1 ;Encendido ((PORTA) and 0FFh), 1, a
+ BCF LATA, 0
+ BSF LATA, 1
  BSF LATA, 2
  BSF LATA, 3
  BCF LATA, 4
@@ -5520,14 +6086,391 @@ ENDM
  BCF LATC, 0
  BSF LATC, 1
  BCF LATC, 2
- BSF LATC, 4
+ BSF LATD, 4
  BCF LATC, 5
  ; --- FILA 5:01010
  BCF LATC, 6
  BSF LATC, 7
- BCF LATD, 0
- BSF LATD, 1
- BCF LATD, 2
+ BCF LATD, 5
+ BSF LATD, 6
+ BCF LATD, 7
+
+ RETURN
+
+    Letra2_L:
+ ; --- FILA 1:01000
+ BCF LATA, 0
+ BSF LATA, 1
+ BSF LATA, 2
+ BSF LATA, 3
+ BCF LATA, 4
+ ; --- FILA 2:01000
+ BCF LATA, 5
+ BSF LATA, 6
+ BCF LATB, 0
+ BSF LATB, 1
+ BCF LATB, 2
+ ; --- FILA 3:01000
+ BCF LATB, 3
+ BSF LATB, 4
+ BSF LATB, 5
+ BSF LATB, 6
+ BCF LATB, 7
+ ; --- FILA 4:01000
+ BCF LATC, 0
+ BSF LATC, 1
+ BCF LATC, 2
+ BSF LATD, 4
+ BCF LATC, 5
+ ; --- FILA 5:01110
+ BCF LATC, 6
+ BSF LATC, 7
+ BCF LATD, 5
+ BSF LATD, 6
+ BCF LATD, 7
+
+ RETURN
+
+    Letra2_L1:
+ ; --- FILA 1:10000
+ BCF LATA, 0
+ BSF LATA, 1
+ BSF LATA, 2
+ BSF LATA, 3
+ BCF LATA, 4
+ ; --- FILA 2:10000
+ BCF LATA, 5
+ BSF LATA, 6
+ BCF LATB, 0
+ BSF LATB, 1
+ BCF LATB, 2
+ ; --- FILA 3:10000
+ BCF LATB, 3
+ BSF LATB, 4
+ BSF LATB, 5
+ BSF LATB, 6
+ BCF LATB, 7
+ ; --- FILA 4:10000
+ BCF LATC, 0
+ BSF LATC, 1
+ BCF LATC, 2
+ BSF LATD, 4
+ BCF LATC, 5
+ ; --- FILA 5:11100
+ BCF LATC, 6
+ BSF LATC, 7
+ BCF LATD, 5
+ BSF LATD, 6
+ BCF LATD, 7
+
+ RETURN
+
+    Letra2_L2:
+ ; --- FILA 1:00001
+ BCF LATA, 0
+ BSF LATA, 1
+ BSF LATA, 2
+ BSF LATA, 3
+ BCF LATA, 4
+ ; --- FILA 2:00001
+ BCF LATA, 5
+ BSF LATA, 6
+ BCF LATB, 0
+ BSF LATB, 1
+ BCF LATB, 2
+ ; --- FILA 3:00001
+ BCF LATB, 3
+ BSF LATB, 4
+ BSF LATB, 5
+ BSF LATB, 6
+ BCF LATB, 7
+ ; --- FILA 4:00001
+ BCF LATC, 0
+ BSF LATC, 1
+ BCF LATC, 2
+ BSF LATD, 4
+ BCF LATC, 5
+ ; --- FILA 5:11001
+ BCF LATC, 6
+ BSF LATC, 7
+ BCF LATD, 5
+ BSF LATD, 6
+ BCF LATD, 7
+
+ RETURN
+
+    Letra2_L3:
+ ; --- FILA 1:00011
+ BCF LATA, 0
+ BSF LATA, 1
+ BSF LATA, 2
+ BSF LATA, 3
+ BCF LATA, 4
+ ; --- FILA 2:00010
+ BCF LATA, 5
+ BSF LATA, 6
+ BCF LATB, 0
+ BSF LATB, 1
+ BCF LATB, 2
+ ; --- FILA 3:00011
+ BCF LATB, 3
+ BSF LATB, 4
+ BSF LATB, 5
+ BSF LATB, 6
+ BCF LATB, 7
+ ; --- FILA 4:00010
+ BCF LATC, 0
+ BSF LATC, 1
+ BCF LATC, 2
+ BSF LATD, 4
+ BCF LATC, 5
+ ; --- FILA 5:10011
+ BCF LATC, 6
+ BSF LATC, 7
+ BCF LATD, 5
+ BSF LATD, 6
+ BCF LATD, 7
+
+ RETURN
+
+    Letra2_L4:
+ ; --- FILA 1:00111
+ BCF LATA, 0
+ BSF LATA, 1
+ BSF LATA, 2
+ BSF LATA, 3
+ BCF LATA, 4
+ ; --- FILA 2:00100
+ BCF LATA, 5
+ BSF LATA, 6
+ BCF LATB, 0
+ BSF LATB, 1
+ BCF LATB, 2
+ ; --- FILA 3:00111
+ BCF LATB, 3
+ BSF LATB, 4
+ BSF LATB, 5
+ BSF LATB, 6
+ BCF LATB, 7
+ ; --- FILA 4:00100
+ BCF LATC, 0
+ BSF LATC, 1
+ BCF LATC, 2
+ BSF LATD, 4
+ BCF LATC, 5
+ ; --- FILA 5:00111
+ BCF LATC, 6
+ BSF LATC, 7
+ BCF LATD, 5
+ BSF LATD, 6
+ BCF LATD, 7
+
+ RETURN
+
+    Letra2_E:
+ ; --- FILA 1:01110
+ BCF LATA, 0
+ BSF LATA, 1
+ BSF LATA, 2
+ BSF LATA, 3
+ BCF LATA, 4
+ ; --- FILA 2:01000
+ BCF LATA, 5
+ BSF LATA, 6
+ BCF LATB, 0
+ BSF LATB, 1
+ BCF LATB, 2
+ ; --- FILA 3:01110
+ BCF LATB, 3
+ BSF LATB, 4
+ BSF LATB, 5
+ BSF LATB, 6
+ BCF LATB, 7
+ ; --- FILA 4:01000
+ BCF LATC, 0
+ BSF LATC, 1
+ BCF LATC, 2
+ BSF LATD, 4
+ BCF LATC, 5
+ ; --- FILA 5:01110
+ BCF LATC, 6
+ BSF LATC, 7
+ BCF LATD, 5
+ BSF LATD, 6
+ BCF LATD, 7
+
+ RETURN
+
+    Letra2_E1:
+ ; --- FILA 1:11101
+ BCF LATA, 0
+ BSF LATA, 1
+ BSF LATA, 2
+ BSF LATA, 3
+ BCF LATA, 4
+ ; --- FILA 2:10001
+ BCF LATA, 5
+ BSF LATA, 6
+ BCF LATB, 0
+ BSF LATB, 1
+ BCF LATB, 2
+ ; --- FILA 3:11101
+ BCF LATB, 3
+ BSF LATB, 4
+ BSF LATB, 5
+ BSF LATB, 6
+ BCF LATB, 7
+ ; --- FILA 4:10001
+ BCF LATC, 0
+ BSF LATC, 1
+ BCF LATC, 2
+ BSF LATD, 4
+ BCF LATC, 5
+ ; --- FILA 5:11101
+ BCF LATC, 6
+ BSF LATC, 7
+ BCF LATD, 5
+ BSF LATD, 6
+ BCF LATD, 7
+
+ RETURN
+
+    Letra2_E2:
+ ; --- FILA 1:11011
+ BCF LATA, 0
+ BSF LATA, 1
+ BSF LATA, 2
+ BSF LATA, 3
+ BCF LATA, 4
+ ; --- FILA 2:00010
+ BCF LATA, 5
+ BSF LATA, 6
+ BCF LATB, 0
+ BSF LATB, 1
+ BCF LATB, 2
+ ; --- FILA 3:11010
+ BCF LATB, 3
+ BSF LATB, 4
+ BSF LATB, 5
+ BSF LATB, 6
+ BCF LATB, 7
+ ; --- FILA 4:00010
+ BCF LATC, 0
+ BSF LATC, 1
+ BCF LATC, 2
+ BSF LATD, 4
+ BCF LATC, 5
+ ; --- FILA 5:11011
+ BCF LATC, 6
+ BSF LATC, 7
+ BCF LATD, 5
+ BSF LATD, 6
+ BCF LATD, 7
+
+ RETURN
+
+    Letra2_E3:
+ ; --- FILA 1:10111
+ BCF LATA, 0
+ BSF LATA, 1
+ BSF LATA, 2
+ BSF LATA, 3
+ BCF LATA, 4
+ ; --- FILA 2:00100
+ BCF LATA, 5
+ BSF LATA, 6
+ BCF LATB, 0
+ BSF LATB, 1
+ BCF LATB, 2
+ ; --- FILA 3:10100
+ BCF LATB, 3
+ BSF LATB, 4
+ BSF LATB, 5
+ BSF LATB, 6
+ BCF LATB, 7
+ ; --- FILA 4:00100
+ BCF LATC, 0
+ BSF LATC, 1
+ BCF LATC, 2
+ BSF LATD, 4
+ BCF LATC, 5
+ ; --- FILA 5:10111
+ BCF LATC, 6
+ BSF LATC, 7
+ BCF LATD, 5
+ BSF LATD, 6
+ BCF LATD, 7
+
+ RETURN
+
+    Letra2_O:
+ ; --- FILA 1:01111
+ BCF LATA, 0
+ BSF LATA, 1
+ BSF LATA, 2
+ BSF LATA, 3
+ BCF LATA, 4
+ ; --- FILA 2:01001
+ BCF LATA, 5
+ BSF LATA, 6
+ BCF LATB, 0
+ BSF LATB, 1
+ BCF LATB, 2
+ ; --- FILA 3:01001
+ BCF LATB, 3
+ BSF LATB, 4
+ BSF LATB, 5
+ BSF LATB, 6
+ BCF LATB, 7
+ ; --- FILA 4:01001
+ BCF LATC, 0
+ BSF LATC, 1
+ BCF LATC, 2
+ BSF LATD, 4
+ BCF LATC, 5
+ ; --- FILA 5:01111
+ BCF LATC, 6
+ BSF LATC, 7
+ BCF LATD, 5
+ BSF LATD, 6
+ BCF LATD, 7
+
+ RETURN
+
+    Letra2_O1:
+ ; --- FILA 1:11110
+ BCF LATA, 0
+ BSF LATA, 1
+ BSF LATA, 2
+ BSF LATA, 3
+ BCF LATA, 4
+ ; --- FILA 2:10010
+ BCF LATA, 5
+ BSF LATA, 6
+ BCF LATB, 0
+ BSF LATB, 1
+ BCF LATB, 2
+ ; --- FILA 3:10010
+ BCF LATB, 3
+ BSF LATB, 4
+ BSF LATB, 5
+ BSF LATB, 6
+ BCF LATB, 7
+ ; --- FILA 4:10010
+ BCF LATC, 0
+ BSF LATC, 1
+ BCF LATC, 2
+ BSF LATD, 4
+ BCF LATC, 5
+ ; --- FILA 5:11110
+ BCF LATC, 6
+ BSF LATC, 7
+ BCF LATD, 5
+ BSF LATD, 6
+ BCF LATD, 7
+
+ RETURN
+
 ;------------------------------------------------------
 ; Subrutina Retardo de 1 segundo
 ;------------------------------------------------------
@@ -5556,9 +6499,37 @@ ENDM
 
  RETURN
 
+;------------------------------------------------------
+; Subrutina Retardo de 250ms segundo
+;------------------------------------------------------
+    Retardo_250ms:
+ MOVLW 2
+ MOVWF ContadorExterno
+
+    LoopExterno250:
+ MOVLW 200
+ MOVWF ContadorMedio
+
+    LoopMedio250:
+ MOVLW 250
+ MOVWF ContadorInterno
+
+    LoopInterno250:
+ ;NOP
+ NOP ;Consume un ciclo
+ NOP
+ DECFSZ ContadorInterno, F
+ GOTO LoopInterno250
+ DECFSZ ContadorMedio, F
+ GOTO LoopMedio250
+ DECFSZ ContadorExterno, F
+ GOTO LoopExterno250
+
+ RETURN
+
 
     PSECT udata ;Deficnion de variables
-      ContadorExterno: DS 1
+      ContadorExterno: DS 1 ;variable para bucle externo
       ContadorMedio: DS 1
       ContadorInterno: DS 1
 

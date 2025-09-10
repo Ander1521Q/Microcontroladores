@@ -25,8 +25,8 @@
 	MOVLW 0b01110010 ;Configurar reloj a 8Mhz
 	MOVWF OSCCON
 	
-	MOVLW 0B00010000
-	MOVWF TRISB ;Configuta PORTB como salida
+	MOVLW 0B00010000 ;Configiuracion de bits para RB0-RB3 como salidas y RB4 como entrada
+	MOVWF TRISB ;Configuta PORTB 
 	CLRF LATB ;PORTB en 0
 	
     Boton_Loop:
