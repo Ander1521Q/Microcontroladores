@@ -1,7 +1,7 @@
 ### HEXMate logfile and output summary ###
 
 ### Command-line arguments ###
- C:\Users\ANDER\AppData\Local\Temp\xcAslt4.\driver_tmp_3.o
+ C:\Users\ANDER\AppData\Local\Temp\xcAsrb0.\driver_tmp_3.o
  -Odist/default/production\Secuencias_Led_Plan_A.X.production.hex
  -logfile=dist/default/production\Secuencias_Led_Plan_A.X.production.hxl
  -addressing=1
@@ -9,12 +9,12 @@
 
 ### Memory Usage ###
  Input file ranges:
-  7632h - 7FFFh		(C:\Users\ANDER\AppData\Local\Temp\xcAslt4.\driver_tmp_3.o)
-  300000h - 300003h		(C:\Users\ANDER\AppData\Local\Temp\xcAslt4.\driver_tmp_3.o)
-  300005h - 300006h		(C:\Users\ANDER\AppData\Local\Temp\xcAslt4.\driver_tmp_3.o)
-  300008h - 30000Dh		(C:\Users\ANDER\AppData\Local\Temp\xcAslt4.\driver_tmp_3.o)
+  762Ch - 7FFFh		(C:\Users\ANDER\AppData\Local\Temp\xcAsrb0.\driver_tmp_3.o)
+  300000h - 300003h		(C:\Users\ANDER\AppData\Local\Temp\xcAsrb0.\driver_tmp_3.o)
+  300005h - 300006h		(C:\Users\ANDER\AppData\Local\Temp\xcAsrb0.\driver_tmp_3.o)
+  300008h - 30000Dh		(C:\Users\ANDER\AppData\Local\Temp\xcAsrb0.\driver_tmp_3.o)
  Unused ranges:
-  0h - 7631h
+  0h - 762Bh
   8000h - 2FFFFFh
   300004h - 300004h
   300007h - 300007h
@@ -22,11 +22,12 @@
 ### Hex Memory Map ###
  Legend:
   -- = Unused memory
-  H1 = Input file             (C:\Users\ANDER\AppData\Local\Temp\xcAslt4.\driver_tmp_3.o)
+  H1 = Input file             (C:\Users\ANDER\AppData\Local\Temp\xcAsrb0.\driver_tmp_3.o)
 ----------------------------------------------------------
          | 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
 ----------------------------------------------------------
-00007630 | -- -- H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00007620 | -- -- -- -- -- -- -- -- -- -- -- -- H1 H1 H1 H1
+00007630 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 00007640 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 00007650 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 00007660 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1

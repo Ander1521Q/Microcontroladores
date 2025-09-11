@@ -150,7 +150,7 @@
 
     LoopInterno:
 	;NOP
-	NOP
+	NOP ;Consume un ciclo
 	NOP
 	DECFSZ ContadorInterno, F
 	GOTO LoopInterno

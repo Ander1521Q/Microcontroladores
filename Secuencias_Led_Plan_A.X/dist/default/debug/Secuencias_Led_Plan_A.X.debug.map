@@ -6,7 +6,7 @@ Linker command line:
   --edf=C:/Program Files/Microchip/MPLABX/v6.25/packs/Microchip/PIC18Fxxxx_DFP/1.7.171/xc8\pic\dat\20250117225543_en.msgs \
   -cs -h+dist/default/debug\Secuencias_Led_Plan_A.X.debug.sym \
   --cmf=dist/default/debug\Secuencias_Led_Plan_A.X.debug.cmf -z -Q18F4550 \
-  -oC:\Users\ANDER\AppData\Local\Temp\xcAsllk.\driver_tmp_3.o \
+  -oC:\Users\ANDER\AppData\Local\Temp\xcAsq48.\driver_tmp_3.o \
   --fixupoverflow=error -ver=XC8 PIC(R) Assembler --fixupoverflow=lstwarn \
   -Mdist/default/debug/Secuencias_Led_Plan_A.X.debug.map -E1 \
   -ACODE=00h-07FFFh -ACONST=00h-07FFFh -ASMALLCONST=0800h-08FFhx120 \
@@ -27,14 +27,14 @@ Machine type is 18F4550
                 Name                               Link     Load   Length Selector   Space Scale
 build/default/debug/Secuencias_Led_A.o
                 config                           300000   300000        E        0       4
-                main_code                          7636     7636      9CA     3B1B       0
-                resetVec                           7632     7632        4     3B19       0
+                main_code                          7630     7630      9D0     3B18       0
+                resetVec                           762C     762C        4     3B16       0
                 udata                                60       60        3       60       1
 
 TOTAL           Name                               Link     Load   Length     Space
         CLASS   CODE           
-                main_code                          7636     7636      9CA         0
-                resetVec                           7632     7632        4         0
+                main_code                          7630     7630      9D0         0
+                resetVec                           762C     762C        4         0
 
         CLASS   CONST          
 
@@ -83,8 +83,8 @@ TOTAL           Name                               Link     Load   Length     Sp
 SEGMENTS        Name                           Load    Length   Top    Selector   Space  Class
 
                 udata                          000060  000003  000063        60       1  RAM     
-                resetVec                       007632  000004  007636      3B19       0  CODE    
-                main_code                      007636  0009CA  008000      3B1B       0  CODE    
+                resetVec                       00762C  000004  007630      3B16       0  CODE    
+                main_code                      007630  0009D0  008000      3B18       0  CODE    
 
 
 UNUSED ADDRESS RANGES
@@ -100,15 +100,15 @@ UNUSED ADDRESS RANGES
         BANK7            000700-0007FF              100
         BIGRAM           000000-0007FF              800
         BIGSFR           000F60-000FFF               A0
-        CODE             000000-007631             7632
+        CODE             000000-00762B             762C
         COMRAM           000000-00005F               60
-        CONST            000000-007631             7632
+        CONST            000000-00762B             762C
         EEDATA           F00000-F000FF              100
         IDLOC            200000-200007                8
-        MEDIUMCONST      000800-007631             6E32
+        MEDIUMCONST      000800-00762B             6E2C
         RAM              000063-0007FF              100
         SFR              000F60-000FFF               A0
-        SMALLCONST       000800-007631              100
+        SMALLCONST       000800-00762B              100
 
                                   Symbol Table
 
