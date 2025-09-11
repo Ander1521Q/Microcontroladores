@@ -13,10 +13,10 @@
     
 ;Configuracion de bits para PIC18F4550
     
-  CONFIG  FOSC = INTOSC_EC     
-  CONFIG  WDT = OFF             
-  CONFIG  PBADEN = OFF          
-  CONFIG  LVP = OFF
+  CONFIG  FOSC = INTOSC_EC ; Configuracion para utilizar reloj interno    
+  CONFIG  WDT = OFF ;Desactiva el Watchdog timer       
+  CONFIG  PBADEN = OFF ;Configura PortB como digitales      
+  CONFIG  LVP = OFF ;Desactiva programacion a bajo voltaje
 
 ;Incluir definiciones para el PIC18F4550
 #include <xc.inc>
@@ -32,8 +32,8 @@
 	MOVWF OSCCON
 	
 	CLRF ADCON1 ;Desactivar entradas analogicas
-	MOVLW 0x00001111
-	MOVWF ADCON1 ;POner todos los pines como Digitales
+	MOVLW 0x00001111 ;Configutacion de bits para configurar la salida de los puertos
+	MOVWF ADCON1 ;Poner todos los pines como Digitales
 	
 	CLRF TRISA
 	CLRF TRISB ;Configuta PORTB como salida
@@ -58,9 +58,10 @@
 	
     LoopHola:
 	;Secuencia de ejecucion de la palabra HOLA 
-	CALL Letra_H
-	CALL Retardo_1s
-	CALL Apagar_Leds
+	
+	CALL Letra_H ;Se llama a la letra indicada
+	CALL Retardo_1s ;se hace un retardo con los leds encendidos
+	CALL Apagar_Leds ; se apagan los leds
 	CALL Letra_H1
 	CALL Retardo_300ms
 	CALL Apagar_Leds
@@ -104,12 +105,12 @@
 	CALL Retardo_1s
 	CALL Apagar_Leds
 	
-	BTFSS PORTE, 0
-	GOTO LoopHola
-	GOTO LoopLeo
+	BTFSS PORTE, 0 ; Revisa el boton en RE0
+	GOTO LoopHola ; Si no esta precionado sigue el bucle
+	GOTO LoopLeo ; Si es precionado avanza al siguiente bucle
 	
     LoopLeo:
-	
+	;parecido al anterior
 	CALL Letra2_L
 	CALL Retardo_1s
 	CALL Apagar_Leds
@@ -146,6 +147,7 @@
 	GOTO LoopMau
 	
     LoopMau:
+	;parecido al anterior
 	CALL Letra3_M
 	CALL Retardo_1s
 	CALL Apagar_Leds
@@ -190,10 +192,10 @@
 	CLRF LATB
 	CLRF LATC
 	CLRF LATD
-	BCF LATE, 1
-	BCF LATE, 2
+	BCF LATE, 1 ;PORTE 1 en 0
+	BCF LATE, 2 ;PORTE 2 en 0
 	
-	RETURN
+	RETURN ;Regresa donde quedo la ejecucion
 	
     Letra_H:
 	; --- FILA 1:01010
@@ -1457,33 +1459,33 @@
 ; Subrutina Retardo de 1 segundo
 ;------------------------------------------------------
     Retardo_1s:
-	MOVLW 8
-	MOVWF ContadorExterno
+	MOVLW 8 ;Carga 8 en W
+	MOVWF ContadorExterno ;La carga en ContadorExterno
 
     LoopExterno:
-	MOVLW 200
-	MOVWF ContadorMedio
+	MOVLW 200 ;Carga 200 en W
+	MOVWF ContadorMedio ;La carga en ContadorMedio
 
     LoopMedio:
-	MOVLW 250
-	MOVWF ContadorInterno
+	MOVLW 250 ;Carga 250 en W
+	MOVWF ContadorInterno ;La carga en ContadorInterno
 
     LoopInterno:
+	NOP ;Consume un ciclo
 	NOP
 	NOP
-	NOP
-	DECFSZ ContadorInterno, F
-	GOTO LoopInterno
-	DECFSZ ContadorMedio, F
-	GOTO LoopMedio
-	DECFSZ ContadorExterno, F
-	GOTO LoopExterno
+	DECFSZ ContadorInterno, F ;Decrementa el ContadorInterno(si no es 0, repite)
+	GOTO LoopInterno ;Va a LoopInterno y repite hasta llegar a 0
+	DECFSZ ContadorMedio, F ;Decrementa el ContadorMedio(si no es 0, repite)
+	GOTO LoopMedio ;Va a LoopMedio y repite hasta llegar a 0
+	DECFSZ ContadorExterno, F ;Decrementa el ContadorExterno(si no es 0, repite)
+	GOTO LoopExterno ;Va a LoopExterno y repite hasta llegar a 0
 
-	RETURN
+	RETURN ;Cuando termina, regresa donde quedo la ejecucion
 	
-;------------------------------------------------------
-; Subrutina Retardo de 250ms segundo
-;------------------------------------------------------
+;----------------------------------------------------------
+; Subrutina Retardo de 250ms segundo (Parecido al de 1s)
+;----------------------------------------------------------
     Retardo_300ms:
 	MOVLW 3
 	MOVWF ContadorExterno
@@ -1512,7 +1514,7 @@
 	
     PSECT udata ;Deficnion de variables
       ContadorExterno: DS 1 ;variable para bucle externo
-      ContadorMedio:   DS 1
-      ContadorInterno: DS 1
+      ContadorMedio:   DS 1 ;variable para bucle medio
+      ContadorInterno: DS 1 ;variable para bucle interno
 
     END  
