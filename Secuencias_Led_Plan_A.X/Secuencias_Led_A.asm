@@ -1,4 +1,5 @@
-;==============================================================
+
+    ;==============================================================
 ;Secuencia_Led_A Codio para PIC18F4550
 ;3 Secuencias distintas ,25 leds Y 1 Boton en RE0
 ;Oscilador interno de 8MHz
@@ -32,7 +33,7 @@
 	MOVWF OSCCON
 	
 	CLRF ADCON1 ;Desactivar entradas analogicas
-	MOVLW 0x00001111 ;Configutacion de bits para configurar la salida de los puertos
+	MOVLW 0x0F ;Configutacion de bits para configurar la salida de los puertos
 	MOVWF ADCON1 ;Poner todos los pines como Digitales
 	
 	CLRF TRISA
@@ -1517,4 +1518,5 @@
       ContadorMedio:   DS 1 ;variable para bucle medio
       ContadorInterno: DS 1 ;variable para bucle interno
 
-    END  
+    END ;Fin del codigo
+    

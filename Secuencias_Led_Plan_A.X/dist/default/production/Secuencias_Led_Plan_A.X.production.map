@@ -6,7 +6,7 @@ Linker command line:
   --edf=C:/Program Files/Microchip/MPLABX/v6.25/packs/Microchip/PIC18Fxxxx_DFP/1.7.171/xc8\pic\dat\20250117225543_en.msgs \
   -cs -h+dist/default/production\Secuencias_Led_Plan_A.X.production.sym \
   --cmf=dist/default/production\Secuencias_Led_Plan_A.X.production.cmf -z \
-  -Q18F4550 -oC:\Users\ANDER\AppData\Local\Temp\xcAsd74.\driver_tmp_3.o \
+  -Q18F4550 -oC:\Users\ANDER\AppData\Local\Temp\xcAsfsg.\driver_tmp_3.o \
   --fixupoverflow=error -ver=XC8 PIC(R) Assembler --fixupoverflow=lstwarn \
   -Mdist/default/production/Secuencias_Led_Plan_A.X.production.map -E1 \
   -ACODE=00h-07FFFh -ACONST=00h-07FFFh -ASMALLCONST=0800h-08FFhx120 \

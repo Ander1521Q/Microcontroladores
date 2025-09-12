@@ -5,7 +5,8 @@
 # 1 "<command line>" 1
 # 1 "<built-in>" 2
 # 1 "Secuencias_Led_A.asm" 2
-;==============================================================
+
+    ;==============================================================
 ;Secuencia_Led_A Codio para PIC18F4550
 ;3 Secuencias distintas ,25 leds Y 1 Boton en RE0
 ;Oscilador interno de 8MHz
@@ -5463,7 +5464,7 @@ stk_offset SET 0
 auto_size SET 0
 ENDM
 # 6 "C:\\Program Files\\Microchip\\xc8\\v3.00\\pic\\include/xc.inc" 2 3
-# 23 "Secuencias_Led_A.asm" 2
+# 24 "Secuencias_Led_A.asm" 2
 
     PSECT resetVec, class=CODE, reloc=2 ;Vector de reinicio
     ORG 0X00 ;Vector reset
@@ -5476,7 +5477,7 @@ ENDM
  MOVWF OSCCON
 
  CLRF ADCON1 ;Desactivar entradas analogicas
- MOVLW 0x00001111 ;Configutacion de bits para configurar la salida de los puertos
+ MOVLW 0x0F ;Configutacion de bits para configurar la salida de los puertos
  MOVWF ADCON1 ;Poner todos los pines como Digitales
 
  CLRF TRISA
@@ -6961,4 +6962,4 @@ ENDM
       ContadorMedio: DS 1 ;variable para bucle medio
       ContadorInterno: DS 1 ;variable para bucle interno
 
-    END
+    END ;Fin del codigo
