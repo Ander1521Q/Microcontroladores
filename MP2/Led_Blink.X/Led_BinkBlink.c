@@ -21,9 +21,9 @@ void main(void) {
 
     while(1) {
         LATBbits.LATB0 = 1;   // LED ON
-        __delay_ms(1000);     // 1000 ms encendido
+        __delay_ms(1000);     // 1s encendido
 
         LATBbits.LATB0 = 0;   // LED OFF
-        __delay_ms(2000);     // 2000 ms apagado
+        __delay_ms(2000);     // 2s ms apagado
     }
 }
