@@ -1,0 +1,68 @@
+#include <xc.h>
+
+// CONFIG
+#pragma config FOSC = INTOSCIO_EC
+#pragma config WDT = OFF
+#pragma config LVP = OFF
+#pragma config PBADEN = OFF
+#pragma config MCLRE = ON
+
+#define _XTAL_FREQ 8000000
+
+int delay_time = 200; // tiempo inicial en ms
+
+// Interrupción para botones
+void __interrupt(high_priority) ISR(void) {
+    if (INTCONbits.INT0IF) {        // Botón en RB0
+        if (delay_time > 50)        // Límite mínimo
+            delay_time -= 50;       // Más rápido
+        INTCONbits.INT0IF = 0;
+    }
+
+    if (INTCON3bits.INT1IF) {       // Botón en RB1
+        if (delay_time < 1000)      // Límite máximo
+            delay_time += 50;       // Más lento
+        INTCON3bits.INT1IF = 0;
+    }
+}
+
+void main(void) {
+    // Configuración reloj
+    OSCCONbits.IRCF = 0b111; // 8MHz
+    OSCCONbits.SCS = 0b10;
+
+    // LEDs en RD0, RD1, RD2
+    TRISDbits.TRISD0 = 0;
+    TRISDbits.TRISD1 = 0;
+    TRISDbits.TRISD2 = 0;
+    LATD = 0; // Apagar todos al inicio
+
+    // Botones en RB0 y RB1
+    TRISBbits.TRISB0 = 1;
+    TRISBbits.TRISB1 = 1;
+
+    ADCON1 = 0x0F; // Pines digitales
+
+    // Configuración interrupciones
+    RCONbits.IPEN = 1;        // Habilitar prioridades
+    INTCONbits.GIEH = 1;      // Global interrupt enable high
+    INTCONbits.INT0IE = 1;    // Habilitar INT0 (RB0)
+    INTCONbits.INT0IF = 0;    // Limpiar bandera
+    INTCON2bits.INTEDG0 = 0;  // Flanco bajada RB0
+
+    INTCON3bits.INT1IE = 1;   // Habilitar INT1 (RB1)
+    INTCON3bits.INT1IF = 0;
+    INTCON2bits.INTEDG1 = 0;  // Flanco bajada RB1
+
+    while (1) {
+        // Secuencia de LEDs
+        LATD = 0b001; // LED en RD0
+        __delay_ms(delay_time);
+
+        LATD = 0b010; // LED en RD1
+        __delay_ms(delay_time);
+
+        LATD = 0b100; // LED en RD2
+        __delay_ms(delay_time);
+    }
+}
