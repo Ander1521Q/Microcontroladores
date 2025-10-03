@@ -1,0 +1,40 @@
+#include <xc.h>
+
+// CONFIG
+#pragma config FOSC = INTOSCIO_EC
+#pragma config WDT = OFF
+#pragma config LVP = OFF
+#pragma config PBADEN = OFF
+//#pragma config FCMEN = OFF
+#pragma config MCLRE = ON   // <- recomendable ON si usas pin Reset
+
+#define _XTAL_FREQ 8000000
+
+void __interrupt(high_priority) ISR(void) {
+    if (INTCONbits.INT0IF) {
+        LATDbits.LATD0 ^= 1;   // Toggle LED
+        INTCONbits.INT0IF = 0; // Limpia bandera
+    }
+}
+
+void main(void) {
+    // Configuración reloj interno a 8MHz
+    OSCCONbits.IRCF = 0b111;
+    OSCCONbits.SCS = 0b10;
+
+    // Configuración pines
+    TRISBbits.TRISB0 = 1; // RB0 como entrada (INT0)
+    TRISDbits.TRISD0 = 0; // RD0 como salida
+    LATDbits.LATD0 = 1;   // LED encendido
+
+    // Configurar entradas como digitales
+    ADCON1 = 0x0F;
+
+    // Configuración interrupciones
+    INTCONbits.GIEH = 1;      // Global interrupt enable high
+    INTCONbits.INT0IE = 1;    // Habilitar INT0
+    INTCONbits.INT0IF = 0;    // Limpiar bandera
+    INTCON2bits.INTEDG0 = 0;  // Flanco de bajada
+
+    while (1);
+}
