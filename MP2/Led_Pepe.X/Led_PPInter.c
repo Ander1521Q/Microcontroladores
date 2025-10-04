@@ -4,11 +4,8 @@
  *
  * Created on 2 de octubre de 2025, 8:41
  */
-
-#include <stdio.h>
-#include <stdlib.h>
 #include <xc.h>
-#include <pic18f4550.h>
+//#include <pic18f4550.h>
 
 #pragma config FOSC = INTOSCIO_EC   // Oscilador interno
 #pragma config WDT = OFF
@@ -16,7 +13,7 @@
 #pragma config PBADEN = OFF
 #pragma config MCLRE = OFF
 
-#define _XTAL_FREQ 8000000UL
+#define _XTAL_FREQ 8000000
 
 // Interrupción INT0
 void __interrupt() ISR(void) {
@@ -38,7 +35,7 @@ void main(void) {
     INTCON2bits.INTEDG0 = 0;   // Interrupción en flanco de bajada
     INTCONbits.INT0IF = 0;     // Limpiar bandera
     INTCONbits.INT0IE = 1;     // Habilitar INT0
-    INTCONbits.GIE = 1;        // Habilitar interrupciones globales
+    INTCONbits.GIE = 1;        // Habilitar interrupciones global
 
     while (1) {
         // Loop vacío: todo lo hace la ISR
