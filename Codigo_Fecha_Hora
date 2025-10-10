@@ -1,0 +1,217 @@
+
+#include <xc.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+// CONFIGURACIÓN DEL PIC18F4550
+#pragma config FOSC = HSPLL_HS
+#pragma config WDT = OFF
+#pragma config LVP = OFF
+#pragma config PBADEN = OFF
+
+#define _XTAL_FREQ 20000000  // 20 MHz
+
+#define _XTAL_FREQ 8000000   // o el valor real de tu cristal, ej. 20MHz
+
+// ====================== LCD (modo 4 bits) ======================
+#define RS LATBbits.LATB0
+#define EN LATBbits.LATB1
+#define D4 LATBbits.LATB2
+#define D5 LATBbits.LATB3
+#define D6 LATBbits.LATB4
+#define D7 LATBbits.LATB5
+
+// ====================== PROTOTIPOS ======================
+void LCD_Init(void);
+void LCD_Cmd(unsigned char cmd);
+void LCD_Char(unsigned char data);
+void LCD_String(const char *str);
+void LCD_Set_Cursor(unsigned char row, unsigned char column);
+void LCD_Clear(void);
+void LCD_Print(char row, char col, char *text);
+
+void I2C_Init(void);
+void I2C_Start(void);
+void I2C_Stop(void);
+void I2C_Write(unsigned char data);
+unsigned char I2C_Read(unsigned char ack);
+
+#define DS1307_ADDRESS 0xD0  // Dirección base RTC
+
+unsigned char BCDtoDEC(unsigned char val);
+unsigned char DECtoBCD(unsigned char val);
+void RTC_Set_Time_Date(unsigned char sec, unsigned char min, unsigned char hour,
+                       unsigned char day, unsigned char month, unsigned char year);
+void RTC_Read_Time_Date(unsigned char *sec, unsigned char *min, unsigned char *hour,
+                        unsigned char *day, unsigned char *month, unsigned char *year);
+
+// ====================== LCD ======================
+void LCD_Pulse(void) {
+    EN = 1; __delay_ms(1); EN = 0;
+}
+
+void LCD_Cmd(unsigned char cmd) {
+    RS = 0;
+    D4 = (cmd >> 4) & 1; D5 = (cmd >> 5) & 1; D6 = (cmd >> 6) & 1; D7 = (cmd >> 7) & 1;
+    LCD_Pulse();
+    D4 = cmd & 1; D5 = (cmd >> 1) & 1; D6 = (cmd >> 2) & 1; D7 = (cmd >> 3) & 1;
+    LCD_Pulse();
+}
+
+void LCD_Char(unsigned char data) {
+    RS = 1;
+    D4 = (data >> 4) & 1; D5 = (data >> 5) & 1; D6 = (data >> 6) & 1; D7 = (data >> 7) & 1;
+    LCD_Pulse();
+    D4 = data & 1; D5 = (data >> 1) & 1; D6 = (data >> 2) & 1; D7 = (data >> 3) & 1;
+    LCD_Pulse();
+}
+
+void LCD_Init(void) {
+    TRISB = 0x00;
+    LATB = 0x00;
+    __delay_ms(15);
+    LCD_Cmd(0x02);
+    LCD_Cmd(0x28);
+    LCD_Cmd(0x0C);
+    LCD_Cmd(0x06);
+    LCD_Cmd(0x01);
+    __delay_ms(2);
+}
+
+void LCD_Set_Cursor(unsigned char row, unsigned char column) {
+    unsigned char temp = (row == 1) ? (0x80 + (column - 1)) : (0xC0 + (column - 1));
+    LCD_Cmd(temp);
+}
+
+void LCD_String(const char *str) {
+    while (*str) LCD_Char(*str++);
+}
+
+void LCD_Clear(void) {
+    LCD_Cmd(0x01);
+    __delay_ms(2);
+}
+
+void LCD_Print(char row, char col, char *text) {
+    LCD_Set_Cursor(row, col);
+    LCD_String(text);
+}
+
+// ====================== I2C ======================
+void I2C_Init(void)
+{
+    TRISC |= 0b00011000;   // RC3 (SCL) y RC4 (SDA) como entradas
+
+    SSPCON1 = 0b00101000;  // SSPEN = 1, modo I2C Master
+    SSPCON2 = 0x00;
+    SSPADD  = ((_XTAL_FREQ / 4) / 100000) - 1;  // 100kHz si _XTAL_FREQ está definido
+    SSPSTAT = 0x00;
+}
+
+
+void I2C_Wait(void) {
+    while ((SSPCON2 & 0x1F) || (SSPSTATbits.R_nW));
+}
+
+void I2C_Start(void) {
+    I2C_Wait();
+    SSPCON2bits.SEN = 1;
+}
+
+void I2C_Stop(void) {
+    I2C_Wait();
+    SSPCON2bits.PEN = 1;
+}
+
+void I2C_Write(unsigned char data) {
+    I2C_Wait();
+    SSPBUF = data;
+}
+
+unsigned char I2C_Read(unsigned char ack) {
+    unsigned char temp;
+    I2C_Wait();
+    SSPCON2bits.RCEN = 1;
+    I2C_Wait();
+    temp = SSPBUF;
+    I2C_Wait();
+    SSPCON2bits.ACKDT = (ack) ? 0 : 1;
+    SSPCON2bits.ACKEN = 1;
+    return temp;
+}
+
+// ====================== RTC DS1307 ======================
+unsigned char BCDtoDEC(unsigned char val) {
+    return ((val / 16 * 10) + (val % 16));
+}
+
+unsigned char DECtoBCD(unsigned char val) {
+    return ((val / 10 * 16) + (val % 10));
+}
+
+void RTC_Set_Time_Date(unsigned char sec, unsigned char min, unsigned char hour,
+                       unsigned char day, unsigned char month, unsigned char year) {
+    I2C_Start();
+    I2C_Write(DS1307_ADDRESS);
+    I2C_Write(0x00);
+    I2C_Write(DECtoBCD(sec));
+    I2C_Write(DECtoBCD(min));
+    I2C_Write(DECtoBCD(hour));
+    I2C_Write(0x01); // Día de la semana (1 = lunes)
+    I2C_Write(DECtoBCD(day));
+    I2C_Write(DECtoBCD(month));
+    I2C_Write(DECtoBCD(year));
+    I2C_Stop();
+}
+
+void RTC_Read_Time_Date(unsigned char *sec, unsigned char *min, unsigned char *hour,
+                        unsigned char *day, unsigned char *month, unsigned char *year) {
+    I2C_Start();
+    I2C_Write(DS1307_ADDRESS);
+    I2C_Write(0x00);
+    I2C_Start();
+    I2C_Write(DS1307_ADDRESS + 1);
+    *sec = BCDtoDEC(I2C_Read(1));
+    *min = BCDtoDEC(I2C_Read(1));
+    *hour = BCDtoDEC(I2C_Read(1));
+    I2C_Read(1);
+    *day = BCDtoDEC(I2C_Read(1));
+    *month = BCDtoDEC(I2C_Read(1));
+    *year = BCDtoDEC(I2C_Read(0));
+    I2C_Stop();
+}
+
+// ====================== MAIN ======================
+void main(void) {
+    unsigned char sec, min, hour, day, month, year;
+    char buffer[17];
+
+    LCD_Init();
+    I2C_Init();
+
+    LCD_Clear();
+    LCD_Print(1, 1, "Configurando RTC");
+    __delay_ms(1000);
+
+    // 👇 SOLO EJECUTA UNA VEZ (luego comentar)
+    RTC_Set_Time_Date(0, 45, 14, 10, 10, 25); // Segundos, Minutos, Horas, Día, Mes, Año (10/10/2025 14:45:00)
+    LCD_Clear();
+    LCD_Print(1, 1, "RTC Configurado");
+    __delay_ms(1500);
+
+    LCD_Clear();
+
+    while (1) {
+        RTC_Read_Time_Date(&sec, &min, &hour, &day, &month, &year);
+
+        sprintf(buffer, "%02u:%02u:%02u", hour, min, sec);
+        LCD_Print(1, 1, buffer);
+
+        sprintf(buffer, "%02u/%02u/20%02u", day, month, year);
+        LCD_Print(2, 1, buffer);
+
+        __delay_ms(1000);
+    }
+}
