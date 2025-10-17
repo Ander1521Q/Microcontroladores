@@ -7,12 +7,12 @@
 #pragma config FOSC = HSPLL_HS, WDT = OFF, LVP = OFF, PBADEN = OFF
 
 // ==== CONFIGURACIÓN DE PINES LCD ====
-#define RS LATBbits.LATB0
-#define EN LATBbits.LATB1
-#define D4 LATBbits.LATB2
-#define D5 LATBbits.LATB3
-#define D6 LATBbits.LATB4
-#define D7 LATBbits.LATB5
+#define RS LATBbits.LATB2
+#define EN LATBbits.LATB3
+#define D4 LATDbits.LATD4
+#define D5 LATDbits.LATD5
+#define D6 LATDbits.LATD6
+#define D7 LATDbits.LATD7
 
 // ==== PROTOTIPOS ====
 void LCD_Init(void);
@@ -23,7 +23,6 @@ void LCD_Clear(void);
 void LCD_SetCursor(unsigned char row, unsigned char col);
 void UART_Init(void);
 char UART_Read(void);
-unsigned char UART_DataReady(void);
 void parseGPGGA(char *nmea);
 void mostrarDatos(void);
 
@@ -33,8 +32,11 @@ char hora[10], lat[15], lon[15], alt[10];
 unsigned char i = 0;
 
 void main(void) {
-    TRISB = 0x00;  // Puerto B como salida para LCD
+    TRISBbits.TRISB2 = 0;
+    TRISBbits.TRISB3 = 0;
+    TRISD &= 0x0F;       // RD4-RD7 como salida
     LATB = 0x00;
+    LATD = 0x00;
     TRISCbits.TRISC7 = 1; // RX
     TRISCbits.TRISC6 = 0; // TX
 
@@ -49,7 +51,6 @@ void main(void) {
         if (c == '$') {
             i = 0;
             buffer[i++] = c;
-            // leer hasta fin de línea o buffer lleno
             while (i < 99) {
                 c = UART_Read();
                 if (c == '\n') break;
@@ -57,7 +58,6 @@ void main(void) {
             }
             buffer[i] = '\0';
 
-            // si la cadena es GPGGA, procesar
             if (strstr(buffer, "$GPGGA") != NULL) {
                 parseGPGGA(buffer);
                 mostrarDatos();
@@ -66,10 +66,8 @@ void main(void) {
     }
 }
 
-// ==== INICIALIZACIÓN UART ====
+// ==== UART ====
 void UART_Init(void) {
-    TRISCbits.TRISC7 = 1; // RX
-    TRISCbits.TRISC6 = 0; // TX
     SPBRG = 51; // 9600 bps con Fosc = 8MHz
     BRGH = 1;
     SYNC = 0;
@@ -83,7 +81,7 @@ char UART_Read(void) {
     return RCREG;
 }
 
-// ==== FUNCIONES LCD ====
+// ==== LCD ====
 void LCD_Pulse(void) {
     EN = 1; __delay_us(500);
     EN = 0; __delay_us(500);
@@ -142,9 +140,8 @@ void LCD_String(const char *msg) {
     while (*msg) LCD_Char(*msg++);
 }
 
-// ==== PROCESAMIENTO DE DATOS NMEA ====
+// ==== GPS PARSER ====
 void parseGPGGA(char *nmea) {
-    // Ejemplo: $GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,...
     char *token;
     unsigned char field = 0;
     token = strtok(nmea, ",");
@@ -152,16 +149,16 @@ void parseGPGGA(char *nmea) {
     while (token != NULL) {
         field++;
         switch (field) {
-            case 2: strcpy(hora, token); break;      // hhmmss.ss
-            case 3: strcpy(lat, token); break;       // Latitud
-            case 5: strcpy(lon, token); break;       // Longitud
-            case 10: strcpy(alt, token); break;      // Altitud
+            case 2: strcpy(hora, token); break;
+            case 3: strcpy(lat, token); break;
+            case 5: strcpy(lon, token); break;
+            case 10: strcpy(alt, token); break;
         }
         token = strtok(NULL, ",");
     }
 }
 
-// ==== MOSTRAR DATOS EN LCD ====
+// ==== MOSTRAR DATOS ====
 void mostrarDatos(void) {
     char linea1[17], linea2[17];
 
@@ -185,3 +182,4 @@ void mostrarDatos(void) {
     LCD_String(linea2);
     __delay_ms(3000);
 }
+
