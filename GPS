@@ -1,0 +1,187 @@
+#include <xc.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#define _XTAL_FREQ 8000000  // Frecuencia del cristal (8 MHz)
+
+#pragma config FOSC = HSPLL_HS, WDT = OFF, LVP = OFF, PBADEN = OFF
+
+// ==== CONFIGURACIÓN DE PINES LCD ====
+#define RS LATBbits.LATB0
+#define EN LATBbits.LATB1
+#define D4 LATBbits.LATB2
+#define D5 LATBbits.LATB3
+#define D6 LATBbits.LATB4
+#define D7 LATBbits.LATB5
+
+// ==== PROTOTIPOS ====
+void LCD_Init(void);
+void LCD_Command(unsigned char cmd);
+void LCD_Char(unsigned char data);
+void LCD_String(const char *msg);
+void LCD_Clear(void);
+void LCD_SetCursor(unsigned char row, unsigned char col);
+void UART_Init(void);
+char UART_Read(void);
+unsigned char UART_DataReady(void);
+void parseGPGGA(char *nmea);
+void mostrarDatos(void);
+
+// ==== VARIABLES GLOBALES ====
+char buffer[100];
+char hora[10], lat[15], lon[15], alt[10];
+unsigned char i = 0;
+
+void main(void) {
+    TRISB = 0x00;  // Puerto B como salida para LCD
+    LATB = 0x00;
+    TRISCbits.TRISC7 = 1; // RX
+    TRISCbits.TRISC6 = 0; // TX
+
+    LCD_Init();
+    UART_Init();
+    LCD_String(" Esperando GPS ");
+    __delay_ms(2000);
+    LCD_Clear();
+
+    while (1) {
+        char c = UART_Read();
+        if (c == '$') {
+            i = 0;
+            buffer[i++] = c;
+            // leer hasta fin de línea o buffer lleno
+            while (i < 99) {
+                c = UART_Read();
+                if (c == '\n') break;
+                buffer[i++] = c;
+            }
+            buffer[i] = '\0';
+
+            // si la cadena es GPGGA, procesar
+            if (strstr(buffer, "$GPGGA") != NULL) {
+                parseGPGGA(buffer);
+                mostrarDatos();
+            }
+        }
+    }
+}
+
+// ==== INICIALIZACIÓN UART ====
+void UART_Init(void) {
+    TRISCbits.TRISC7 = 1; // RX
+    TRISCbits.TRISC6 = 0; // TX
+    SPBRG = 51; // 9600 bps con Fosc = 8MHz
+    BRGH = 1;
+    SYNC = 0;
+    SPEN = 1;
+    TXEN = 1;
+    CREN = 1;
+}
+
+char UART_Read(void) {
+    while (!RCIF);
+    return RCREG;
+}
+
+// ==== FUNCIONES LCD ====
+void LCD_Pulse(void) {
+    EN = 1; __delay_us(500);
+    EN = 0; __delay_us(500);
+}
+
+void LCD_Command(unsigned char cmd) {
+    RS = 0;
+    D4 = (cmd >> 4) & 1;
+    D5 = (cmd >> 5) & 1;
+    D6 = (cmd >> 6) & 1;
+    D7 = (cmd >> 7) & 1;
+    LCD_Pulse();
+    D4 = cmd & 1;
+    D5 = (cmd >> 1) & 1;
+    D6 = (cmd >> 2) & 1;
+    D7 = (cmd >> 3) & 1;
+    LCD_Pulse();
+}
+
+void LCD_Char(unsigned char data) {
+    RS = 1;
+    D4 = (data >> 4) & 1;
+    D5 = (data >> 5) & 1;
+    D6 = (data >> 6) & 1;
+    D7 = (data >> 7) & 1;
+    LCD_Pulse();
+    D4 = data & 1;
+    D5 = (data >> 1) & 1;
+    D6 = (data >> 2) & 1;
+    D7 = (data >> 3) & 1;
+    LCD_Pulse();
+}
+
+void LCD_Init(void) {
+    __delay_ms(15);
+    LCD_Command(0x02);
+    LCD_Command(0x28);
+    LCD_Command(0x0C);
+    LCD_Command(0x06);
+    LCD_Command(0x01);
+    __delay_ms(2);
+}
+
+void LCD_Clear(void) {
+    LCD_Command(0x01);
+    __delay_ms(2);
+}
+
+void LCD_SetCursor(unsigned char row, unsigned char col) {
+    unsigned char pos = (row == 1) ? 0x80 : 0xC0;
+    pos += (col - 1);
+    LCD_Command(pos);
+}
+
+void LCD_String(const char *msg) {
+    while (*msg) LCD_Char(*msg++);
+}
+
+// ==== PROCESAMIENTO DE DATOS NMEA ====
+void parseGPGGA(char *nmea) {
+    // Ejemplo: $GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,...
+    char *token;
+    unsigned char field = 0;
+    token = strtok(nmea, ",");
+
+    while (token != NULL) {
+        field++;
+        switch (field) {
+            case 2: strcpy(hora, token); break;      // hhmmss.ss
+            case 3: strcpy(lat, token); break;       // Latitud
+            case 5: strcpy(lon, token); break;       // Longitud
+            case 10: strcpy(alt, token); break;      // Altitud
+        }
+        token = strtok(NULL, ",");
+    }
+}
+
+// ==== MOSTRAR DATOS EN LCD ====
+void mostrarDatos(void) {
+    char linea1[17], linea2[17];
+
+    LCD_Clear();
+    sprintf(linea1, "Hora:%c%c:%c%c:%c%c", hora[0], hora[1], hora[2], hora[3], hora[4], hora[5]);
+    LCD_SetCursor(1, 1);
+    LCD_String(linea1);
+
+    sprintf(linea2, "Alt:%sm", alt);
+    LCD_SetCursor(2, 1);
+    LCD_String(linea2);
+    __delay_ms(3000);
+
+    LCD_Clear();
+    sprintf(linea1, "Lat:%s", lat);
+    LCD_SetCursor(1, 1);
+    LCD_String(linea1);
+
+    sprintf(linea2, "Lon:%s", lon);
+    LCD_SetCursor(2, 1);
+    LCD_String(linea2);
+    __delay_ms(3000);
+}
