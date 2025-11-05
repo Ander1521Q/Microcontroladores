@@ -1,9 +1,10 @@
 #ifndef LCDGPS_H
-#define	LCDGPS_H
+#define LCDGPS_H
 
 #include <xc.h>
 #include "configGPS.h"
 
+// CONEXIONES ORIGINALES - NO CAMBIAR
 #define RS LATBbits.LATB2
 #define EN LATBbits.LATB3
 #define D4 LATDbits.LATD4

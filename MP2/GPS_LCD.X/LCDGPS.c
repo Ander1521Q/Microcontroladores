@@ -1,5 +1,7 @@
 #include "LCDGPS.h"
 
+#define _XTAL_FREQ 8000000
+
 static void LCD_Pulse(void) {
     EN = 1;
     __delay_us(10);
@@ -30,37 +32,53 @@ void LCD_Char(unsigned char data) {
 }
 
 void LCD_Init(void) {
-    RS_DIR = EN_DIR = 0;
-    D4_DIR = D5_DIR = D6_DIR = D7_DIR = 0;
+    // Configurar pines como salidas
+    RS_DIR = 0;
+    EN_DIR = 0;
+    D4_DIR = 0;
+    D5_DIR = 0;
+    D6_DIR = 0;
+    D7_DIR = 0;
 
-    __delay_ms(20);
+    __delay_ms(50);  // Espera inicial más larga
+    
+    // Secuencia de inicialización en 4 bits
     RS = 0;
     EN = 0;
-
-    LCD_Send4Bits(0x03); __delay_ms(5);
-    LCD_Send4Bits(0x03); __delay_us(100);
+    
     LCD_Send4Bits(0x03);
-    LCD_Send4Bits(0x02);
-
-    LCD_Command(0x28); // 4 bits, 2 líneas
-    LCD_Command(0x0C); // display ON
-    LCD_Command(0x06); // auto incremento
-    LCD_Command(0x01); // clear
-    __delay_ms(2);
+    __delay_ms(5);
+    LCD_Send4Bits(0x03);
+    __delay_us(150);
+    LCD_Send4Bits(0x03);
+    LCD_Send4Bits(0x02);  // Cambio a modo 4 bits
+    
+    // Configurar LCD
+    LCD_Command(0x28); // 4 bits, 2 líneas, 5x8 puntos
+    LCD_Command(0x0C); // Display ON, cursor OFF
+    LCD_Command(0x06); // Incremento automático, no shift
+    LCD_Command(0x01); // Clear display
+    __delay_ms(5);
 }
 
 void LCD_String(const char *msg) {
-    while (*msg) LCD_Char(*msg++);
+    while (*msg) {
+        LCD_Char(*msg++);
+    }
 }
 
 void LCD_String_xy(char row, char pos, const char *msg) {
-    char location = (row == 0) ? 0x80 : 0xC0;
-    location += pos;
+    char location;
+    if (row == 0)
+        location = 0x80 + pos;  // Primera línea
+    else
+        location = 0xC0 + pos;  // Segunda línea
+    
     LCD_Command(location);
     LCD_String(msg);
 }
 
 void LCD_Clear(void) {
     LCD_Command(0x01);
-    __delay_ms(2);
+    __delay_ms(5);
 }
