@@ -9,7 +9,7 @@
 #include <xc.h>
 #include "ssd1306.h"
 
-// ================= CONFIGURACIÓN =================
+// CONFIG
 #pragma config FOSC = INTOSCIO_EC
 #pragma config PLLDIV = 1
 #pragma config CPUDIV = OSC1_PLL2

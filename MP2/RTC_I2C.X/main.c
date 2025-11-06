@@ -1,10 +1,3 @@
-/* 
- * File:   main.c
- * Author: ANDER
- *
- * Created on 20 de octubre de 2025, 07:08 PM
- */
-
 #include <xc.h>
 #include <stdio.h>
 #include "Config.h"
@@ -12,8 +5,9 @@
 #include "ds1307.h"
 
 void main(void) {
-    unsigned char h, m, s, d, mo, y;
-    
+    unsigned char h, m, s, d, mt, y;
+    char linea1[17], linea2[17];
+
     OSCCONbits.IRCF = 0b111; // 8MHz
     ADCON1 = 0x0F;
     CMCON = 0x07;
@@ -22,22 +16,40 @@ void main(void) {
     LCD_Clear();
     DS1307_Init();
 
-    // Solo se configura la hora una vez:
-    // DS1307_SetTime(14, 30, 0);  // 14:30:00
-    // DS1307_SetDate(17, 10, 25); // 17/10/2025
+    // Si el reloj no está corriendo, configurarlo
+    if (!DS1307_IsRunning()) {
+        LCD_Clear();
+        LCD_String_xy(0, 0, "RTC sin hora");
+        LCD_String_xy(1, 0, "Ajustando...");
 
-    while(1) {
+        __delay_ms(2000);
+
+        // Ajusta la hora inicial (ejemplo: 14:30 + 2 minutos)
+        unsigned char hora = 15;
+        unsigned char minuto = 30 + 2;  // 2 minutos adelantado
+        if (minuto >= 60) { hora++; minuto -= 60; }
+
+        DS1307_SetTime(hora, minuto, 0);
+        DS1307_SetDate(5, 11, 25); // 5 de noviembre de 2025
+
+        LCD_Clear();
+        LCD_String_xy(0, 0, "Hora establecida");
+        __delay_ms(2000);
+    }
+
+    LCD_Clear();
+
+    while (1) {
         DS1307_GetTime(&h, &m, &s);
-        DS1307_GetDate(&d, &mo, &y);
+        DS1307_GetDate(&d, &mt, &y);
 
-        char buffer[17];
-        sprintf(buffer, "%02u:%02u:%02u", h, m, s);
-        LCD_String_xy(0, 3, buffer);
+        sprintf(linea1, "Fecha:%02d/%02d/20%02d", d, mt, y);
+        sprintf(linea2, "Hora:%02d:%02d:%02d", h, m, s);
 
-        sprintf(buffer, "%02u/%02u/20%02u", d, mo, y);
-        LCD_String_xy(1, 2, buffer);
+        LCD_Clear();
+        LCD_String_xy(0, 0, linea1);
+        LCD_String_xy(1, 0, linea2);
 
-        __delay_ms(500);
+        __delay_ms(1000);
     }
 }
-

@@ -7,48 +7,38 @@
 
 #include "i2c.h"
 
-void I2C_Master_Init(const unsigned long c) {
-    SSPCON = 0b00101000;
-    SSPCON2 = 0x00;
-    SSPADD = (_XTAL_FREQ / (4 * c)) - 1;
-    SSPSTAT = 0x00;
+void I2C_Init(void) {
+    SSPCON1 = 0x28;
+    SSPCON2 = 0;
+    SSPADD = ((_XTAL_FREQ / 4) / 100000) - 1; // 100kHz
+    SSPSTAT = 0;
     TRISBbits.TRISB0 = 1; // SDA
     TRISBbits.TRISB1 = 1; // SCL
 }
 
-void I2C_Master_Wait(void) {
-    while ((SSPCON2 & 0x1F) || (SSPSTATbits.R_nW));
-}
-
-void I2C_Master_Start(void) {
-    I2C_Master_Wait();
+void I2C_Start(void) {
     SSPCON2bits.SEN = 1;
+    while (SSPCON2bits.SEN);
 }
 
-void I2C_Master_RepeatedStart(void) {
-    I2C_Master_Wait();
-    SSPCON2bits.RSEN = 1;
-}
-
-void I2C_Master_Stop(void) {
-    I2C_Master_Wait();
+void I2C_Stop(void) {
     SSPCON2bits.PEN = 1;
+    while (SSPCON2bits.PEN);
 }
 
-void I2C_Master_Write(unsigned d) {
-    I2C_Master_Wait();
-    SSPBUF = d;
+void I2C_Write(unsigned char data) {
+    SSPBUF = data;
+    while (BF);
+    while ((SSPCON2 & 0x1F) || (SSPSTATbits.R_W));
 }
 
-unsigned short I2C_Master_Read(unsigned short a) {
-    unsigned short temp;
-    I2C_Master_Wait();
+unsigned char I2C_Read(unsigned char ack) {
+    unsigned char data;
     SSPCON2bits.RCEN = 1;
-    I2C_Master_Wait();
-    temp = SSPBUF;
-    I2C_Master_Wait();
-    SSPCON2bits.ACKDT = (a)?0:1;
+    while (!SSPSTATbits.BF);
+    data = SSPBUF;
+    SSPCON2bits.ACKDT = (ack) ? 0 : 1;
     SSPCON2bits.ACKEN = 1;
-    return temp;
+    while (SSPCON2bits.ACKEN);
+    return data;
 }
-
