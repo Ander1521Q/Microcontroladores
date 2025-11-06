@@ -1,0 +1,506 @@
+/***************************************************************
+ * main.c
+ * PIC18F4550 - SSD1306(I2C software) + BMP280(I2C) + GPS(UART) 
+ *             + Soil moisture (ADC AN0)
+ *
+ * Pines:
+ *  - I2C software SDA = RB0, SCL = RB1
+ *  - GPS RX -> RC7 (RX), GPS TX not used by PIC (we only read)
+ *  - Soil moisture sensor -> AN0 (RA0)
+ *
+ * Compilar: XC8 (MPLAB X)
+ * Oscilador: 8 MHz interno
+ *
+ ***************************************************************/
+
+#include <xc.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+
+#define _XTAL_FREQ 8000000UL
+
+// ---------------- CONFIG BITS ----------------
+#pragma config FOSC = INTOSCIO_EC   // Oscillator
+#pragma config PLLDIV = 1
+#pragma config CPUDIV = OSC1_PLL2
+#pragma config USBDIV = 1
+#pragma config FCMEN = OFF
+#pragma config IESO = OFF
+#pragma config PWRT = ON
+#pragma config BOR = OFF
+#pragma config WDT = OFF
+#pragma config MCLRE = ON
+#pragma config LVP = OFF
+#pragma config XINST = OFF
+#pragma config PBADEN = OFF
+
+// ---------------- I2C SOFTWARE PINS (bit-bang) ----------------
+// Usamos RB0 = SDA, RB1 = SCL
+#define SDA_LAT LATBbits.LATB0
+#define SCL_LAT LATBbits.LATB1
+#define SDA_PORT PORTBbits.RB0
+#define SCL_PORT PORTBbits.RB1
+#define SDA_TRIS TRISBbits.TRISB0
+#define SCL_TRIS TRISBbits.TRISB1
+
+// Helper: set pin as output = drive line; input = release (pull-up)
+static inline void SDA_drive(uint8_t v) { if(v) { SDA_LAT = 1; SDA_TRIS = 0; } else { SDA_LAT = 0; SDA_TRIS = 0; } }
+static inline void SDA_release(void)   { SDA_TRIS = 1; } // high-Z -> external pull-up
+static inline void SCL_drive(uint8_t v) { if(v) { SCL_LAT = 1; SCL_TRIS = 0; } else { SCL_LAT = 0; SCL_TRIS = 0; } }
+static inline void SCL_release(void)   { SCL_TRIS = 1; } // high-Z
+
+// Small delay for I2C timing
+static inline void I2C_delay(void) { __delay_us(5); }
+
+// I2C software functions (basic, blocking)
+void I2C_Init(void) {
+    // Release lines (inputs = pulled high externally or via LAT=1)
+    LATB |= (1<<0)|(1<<1);
+    SDA_release();
+    SCL_release();
+}
+
+void I2C_Start(void) {
+    SDA_release(); SCL_release(); I2C_delay();
+    SDA_drive(0); I2C_delay();
+    SCL_drive(0);
+}
+
+void I2C_Stop(void) {
+    SDA_drive(0);
+    SCL_release(); I2C_delay();
+    SDA_release(); I2C_delay();
+}
+
+// write a byte; return ACK (0 = ack received, 1 = nack)
+uint8_t I2C_WriteByte(uint8_t b) {
+    for(uint8_t i=0;i<8;i++){
+        if (b & 0x80) { SDA_release(); } else { SDA_drive(0); }
+        b <<= 1;
+        I2C_delay();
+        SCL_release();
+        I2C_delay();
+        SCL_drive(0);
+    }
+    // ACK bit: release SDA and read
+    SDA_release();
+    I2C_delay();
+    SCL_release();
+    I2C_delay();
+    uint8_t ack = SDA_PORT; // 0 = ACK
+    SCL_drive(0);
+    return ack;
+}
+
+// read a byte and send ack (ack=0 send ACK, ack=1 send NACK)
+uint8_t I2C_ReadByte(uint8_t ack) {
+    uint8_t val = 0;
+    SDA_release();
+    for(uint8_t i=0;i<8;i++){
+        val <<= 1;
+        I2C_delay();
+        SCL_release();
+        I2C_delay();
+        if (SDA_PORT) val |= 1;
+        SCL_drive(0);
+    }
+    // send ACK/NACK
+    if(ack==0) SDA_drive(0); else SDA_release();
+    I2C_delay();
+    SCL_release();
+    I2C_delay();
+    SCL_drive(0);
+    SDA_release();
+    return val;
+}
+
+// ---------------- SSD1306 (simple text with small 5x7 font) ----------------
+// Addr (write) = 0x78, read = 0x79 but our routines use full write/read byte
+#define SSD1306_ADDR 0x78
+
+// minimal 5x7 font for 96 chars (space..DEL). We'll include ASCII 32..127
+// font5x7[char - 32][5]
+const uint8_t font5x7[][5] = {
+    // 32..127 (truncated here to necessary subset for brevity).
+    // For simplicity include a reasonable set (space..z). If you need additional chars, add them.
+    // (Full ASCII font would be longer; below is a compact selection covering digits, some letters and symbols.)
+    {0x00,0x00,0x00,0x00,0x00}, // 32 space
+    {0x00,0x00,0x5F,0x00,0x00}, // !
+    {0x00,0x07,0x00,0x07,0x00}, // "
+    {0x14,0x7F,0x14,0x7F,0x14}, // #
+    {0x24,0x2A,0x7F,0x2A,0x12}, // $
+    {0x23,0x13,0x08,0x64,0x62}, // %
+    {0x36,0x49,0x55,0x22,0x50}, // &
+    {0x00,0x05,0x03,0x00,0x00}, // '
+    {0x00,0x1C,0x22,0x41,0x00}, // (
+    {0x00,0x41,0x22,0x1C,0x00}, // )
+    {0x14,0x08,0x3E,0x08,0x14}, // *
+    {0x08,0x08,0x3E,0x08,0x08}, // +
+    {0x00,0x50,0x30,0x00,0x00}, // ,
+    {0x08,0x08,0x08,0x08,0x08}, // -
+    {0x00,0x60,0x60,0x00,0x00}, // .
+    {0x20,0x10,0x08,0x04,0x02}, // /
+    {0x3E,0x51,0x49,0x45,0x3E}, // 0 48
+    {0x00,0x42,0x7F,0x40,0x00}, // 1
+    {0x42,0x61,0x51,0x49,0x46}, // 2
+    {0x21,0x41,0x45,0x4B,0x31}, // 3
+    {0x18,0x14,0x12,0x7F,0x10}, // 4
+    {0x27,0x45,0x45,0x45,0x39}, // 5
+    {0x3C,0x4A,0x49,0x49,0x30}, // 6
+    {0x01,0x71,0x09,0x05,0x03}, // 7
+    {0x36,0x49,0x49,0x49,0x36}, // 8
+    {0x06,0x49,0x49,0x29,0x1E}, // 9
+    {0x00,0x36,0x36,0x00,0x00}, // :
+    {0x00,0x56,0x36,0x00,0x00}, // ;
+    {0x08,0x14,0x22,0x41,0x00}, // <
+    {0x14,0x14,0x14,0x14,0x14}, // =
+    {0x00,0x41,0x22,0x14,0x08}, // >
+    {0x02,0x01,0x51,0x09,0x06}, // ?
+    {0x32,0x49,0x79,0x41,0x3E}, // @
+    {0x7E,0x11,0x11,0x11,0x7E}, // A 65
+    {0x7F,0x49,0x49,0x49,0x36}, // B
+    {0x3E,0x41,0x41,0x41,0x22}, // C
+    {0x7F,0x41,0x41,0x22,0x1C}, // D
+    {0x7F,0x49,0x49,0x49,0x41}, // E
+    {0x7F,0x09,0x09,0x09,0x01}, // F
+    {0x3E,0x41,0x49,0x49,0x7A}, // G
+    {0x7F,0x08,0x08,0x08,0x7F}, // H
+    {0x00,0x41,0x7F,0x41,0x00}, // I
+    {0x20,0x40,0x41,0x3F,0x01}, // J
+    {0x7F,0x08,0x14,0x22,0x41}, // K
+    {0x7F,0x40,0x40,0x40,0x40}, // L
+    {0x7F,0x02,0x0C,0x02,0x7F}, // M
+    {0x7F,0x04,0x08,0x10,0x7F}, // N
+    {0x3E,0x41,0x41,0x41,0x3E}, // O
+    {0x7F,0x09,0x09,0x09,0x06}, // P
+    {0x3E,0x41,0x51,0x21,0x5E}, // Q
+    {0x7F,0x09,0x19,0x29,0x46}, // R
+    {0x46,0x49,0x49,0x49,0x31}, // S
+    {0x01,0x01,0x7F,0x01,0x01}, // T
+    {0x3F,0x40,0x40,0x40,0x3F}, // U
+    {0x1F,0x20,0x40,0x20,0x1F}, // V
+    {0x3F,0x40,0x38,0x40,0x3F}, // W
+    {0x63,0x14,0x08,0x14,0x63}, // X
+    {0x07,0x08,0x70,0x08,0x07}, // Y
+    {0x61,0x51,0x49,0x45,0x43}, // Z
+    // basic punctuation and lowercase characters would continue...
+};
+
+// send command to SSD1306
+void OLED_Command(uint8_t cmd) {
+    I2C_Start();
+    I2C_WriteByte(SSD1306_ADDR);    // device address write
+    I2C_WriteByte(0x00);            // control byte -> command
+    I2C_WriteByte(cmd);
+    I2C_Stop();
+}
+
+// send data byte to SSD1306
+void OLED_Data(uint8_t b) {
+    I2C_Start();
+    I2C_WriteByte(SSD1306_ADDR);
+    I2C_WriteByte(0x40); // control byte -> data
+    I2C_WriteByte(b);
+    I2C_Stop();
+}
+
+void OLED_Init(void) {
+    __delay_ms(100);
+    OLED_Command(0xAE); // display off
+    OLED_Command(0xD5); OLED_Command(0x80);
+    OLED_Command(0xA8); OLED_Command(0x3F);
+    OLED_Command(0xD3); OLED_Command(0x00);
+    OLED_Command(0x40);
+    OLED_Command(0x8D); OLED_Command(0x14);
+    OLED_Command(0x20); OLED_Command(0x00);
+    OLED_Command(0xA1);
+    OLED_Command(0xC8);
+    OLED_Command(0xDA); OLED_Command(0x12);
+    OLED_Command(0x81); OLED_Command(0x7F);
+    OLED_Command(0xD9); OLED_Command(0xF1);
+    OLED_Command(0xDB); OLED_Command(0x40);
+    OLED_Command(0xA4);
+    OLED_Command(0xA6);
+    OLED_Command(0xAF); // display on
+}
+
+// clear screen
+void OLED_Clear(void) {
+    for(uint8_t page=0; page<8; page++){
+        OLED_Command(0xB0 + page);
+        OLED_Command(0x00);
+        OLED_Command(0x10);
+        for(uint8_t col=0; col<128; col++) OLED_Data(0x00);
+    }
+}
+
+// set cursor - page (0..7) and column 0..127
+void OLED_SetCursor(uint8_t page, uint8_t column) {
+    OLED_Command(0xB0 + page);
+    OLED_Command(0x00 + (column & 0x0F));
+    OLED_Command(0x10 + ((column >> 4) & 0x0F));
+}
+
+// Print single ASCII char (32..127)
+void OLED_PrintChar(char c) {
+    if (c < 32 || c > 127) c = ' ';
+    const uint8_t *bmp = font5x7[c - 32];
+    for (uint8_t i=0;i<5;i++) OLED_Data(bmp[i]);
+    OLED_Data(0x00);
+}
+
+// Print string (does not wrap)
+void OLED_PrintString(uint8_t page, uint8_t column, const char *s) {
+    OLED_SetCursor(page, column);
+    while(*s){
+        OLED_PrintChar(*s++);
+    }
+}
+
+// ---------------- BMP280 (basic init + temp/pressure read simplified) ----------------
+#define BMP280_ADDR 0xEC
+
+void BMP280_Init(void) {
+    // Write ctrl_meas = 0x27 (temp and press oversampling x1, normal mode)
+    I2C_Start();
+    I2C_WriteByte(BMP280_ADDR);
+    I2C_WriteByte(0xF4);
+    I2C_WriteByte(0x27);
+    I2C_Stop();
+
+    // config
+    I2C_Start();
+    I2C_WriteByte(BMP280_ADDR);
+    I2C_WriteByte(0xF5);
+    I2C_WriteByte(0xA0);
+    I2C_Stop();
+}
+
+// Very simple raw read of temperature (not fully calibrated).
+// Returns float degrees C (approx).
+float BMP280_ReadTemperature(void) {
+    uint8_t msb, lsb, xlsb;
+    I2C_Start();
+    I2C_WriteByte(BMP280_ADDR);
+    I2C_WriteByte(0xFA); // temp msb reg
+    I2C_Stop();
+
+    I2C_Start();
+    I2C_WriteByte(BMP280_ADDR | 1);
+    msb = I2C_ReadByte(1);
+    lsb = I2C_ReadByte(1);
+    xlsb= I2C_ReadByte(0);
+    I2C_Stop();
+
+    uint32_t raw = ((uint32_t)msb << 12) | ((uint32_t)lsb << 4) | ((uint32_t)(xlsb >> 4));
+    // Very rough conversion (not accurate without calibration). We use a scale to get human-friendly value.
+    float temp = (float)raw / 100.0f; // rough approximation (as in earlier simplified code)
+    return temp;
+}
+
+// ---------------- ADC (Soil moisture on AN0 / RA0) ----------------
+void ADC_Init(void) {
+    ADCON0 = 0x01;   // ADON = 1, CHS = 000 (AN0)
+    ADCON1 = 0x0E;   // ADFM = 1 (right justify), Vref = VDD/VSS, AN0 analog, others digital
+    // Note: For PIC18F4550, ADCON1 config differs — adjust if needed.
+    __delay_ms(5);
+}
+
+uint16_t ADC_Read_AN0(void) {
+    ADCON0 &= ~(0x3C); // clear CHS bits
+    ADCON0 |= (0<<2);  // CHS = 0 (AN0)
+    __delay_ms(2);
+    ADCON0bits.GO_nDONE = 1;
+    while(ADCON0bits.GO_nDONE);
+    return (ADRESH<<8) | ADRESL;
+}
+
+uint8_t SoilPercentFromADC(uint16_t raw) {
+    // raw range ~ 0..1023. Map to 0..100%. Calibrate in real hardware.
+    if (raw > 1023) raw = 1023;
+    uint8_t pct = (uint32_t)raw * 100 / 1023;
+    return pct;
+}
+
+// ---------------- UART (GPS) ----------------
+// We'll poll RCREG in main loop and build NMEA sentences.
+#define GPS_BUFFER_LEN 128
+char gps_buffer[GPS_BUFFER_LEN];
+uint8_t gps_idx = 0;
+bool gps_has_fix = false;
+char gps_lat[16] = "---";
+char gps_lon[16] = "---";
+
+void UART1_Init(void) {
+    // EUSART asynchronous, 9600 bps typical for GPS
+    // BRGH = 1, BRG16 = 0 -> SPBRG = (Fosc/(64*baud)) -1  => 8000000/(64*9600)-1 ≈ 12
+    TXSTA = 0x24; // TXEN = 1, BRGH = 1
+    RCSTA = 0x90; // SPEN = 1, CREN = 1
+    SPBRG = 12;
+    TRISCbits.TRISC7 = 1; // RX as input
+    TRISCbits.TRISC6 = 1;
+}
+
+// parse NMEA line (simple) - checks GGA or RMC and extracts lat/lon in decimal-ish format
+void parse_nmea_sentence(const char *s) {
+    // We will handle $GPGGA and $GPRMC
+    if (strncmp(s, "$GPGGA,",7) == 0 || strncmp(s, "$GNGGA,",7) == 0) {
+        // fields: 1=time,2=lat,3=N/S,4=lon,5=E/W,6=fix quality...
+        char tmp[5][32];
+        uint8_t f=0; const char *p = s+7; uint8_t ti=0;
+        memset(tmp,0,sizeof(tmp));
+        while(*p && f<5) {
+            if(*p==',') { f++; ti=0; p++; continue; }
+            if(ti<31) { tmp[f][ti++]=*p; }
+            p++;
+        }
+        // tmp[0]=time, tmp[1]=lat, tmp[2]=N/S, tmp[3]=lon, tmp[4]=E/W maybe not exact but workable
+        if(strlen(tmp[1])>2 && strlen(tmp[3])>2) {
+            // convert NMEA lat ddmm.mmmm to decimal degrees (string)
+            double lat_deg = 0.0, lon_deg = 0.0;
+            // parse lat
+            char degs[4]={0}; int dlen = (tmp[1][4]=='.')?2:2; // dd
+            // safer parsing:
+            char buf[16];
+            strncpy(buf,tmp[1],15); buf[15]=0;
+            double latval = atof(buf); // ddmm.mmmm
+            int lat_d = (int)(latval / 100);
+            double lat_m = latval - (lat_d*100);
+            lat_deg = lat_d + lat_m/60.0;
+            if (tmp[2][0]=='S') lat_deg = -lat_deg;
+            // lon
+            strncpy(buf,tmp[3],15); buf[15]=0;
+            double lonval = atof(buf); // dddmm.mmmm
+            int lon_d = (int)(lonval / 100);
+            double lon_m = lonval - (lon_d*100);
+            lon_deg = lon_d + lon_m/60.0;
+            if (tmp[4][0]=='W') lon_deg = -lon_deg;
+
+            // write to strings (simple formatting)
+            sprintf(gps_lat, "%02d.%04d", abs((int)lat_deg), (int)((lat_deg - (int)lat_deg)*10000));
+            sprintf(gps_lon, "%03d.%04d", abs((int)lon_deg), (int)((lon_deg - (int)lon_deg)*10000));
+            gps_has_fix = true;
+        }
+        return;
+    }
+    if (strncmp(s, "$GPRMC,",7) == 0 || strncmp(s, "$GNRMC,",7) == 0) {
+        // fields: time, status,A/V,lat,N/S,lon,E/W,...
+        // We'll do a simpler parser splitting by commas
+        char copy[128];
+        strncpy(copy,s,127); copy[127]=0;
+        char *tok = strtok(copy, ",");
+        int field = 0;
+        char lat_s[16] = {0}, lon_s[16]={0}, ns='N', ew='E';
+        while(tok) {
+            field++;
+            if(field==3) { /*status*/ }
+            if(field==4) { strncpy(lat_s,tok,15); }
+            if(field==5) { ns = tok[0]; }
+            if(field==6) { strncpy(lon_s,tok,15); }
+            if(field==7) { ew = tok[0]; break; }
+            tok = strtok(NULL,",");
+        }
+        if(strlen(lat_s)>2 && strlen(lon_s)>2) {
+            double latval = atof(lat_s); int lat_d = (int)(latval/100); double lat_m = latval - lat_d*100; double lat_deg = lat_d + lat_m/60.0; if(ns=='S') lat_deg = -lat_deg;
+            double lonval = atof(lon_s); int lon_d = (int)(lonval/100); double lon_m = lonval - lon_d*100; double lon_deg = lon_d + lon_m/60.0; if(ew=='W') lon_deg = -lon_deg;
+            sprintf(gps_lat, "%02d.%04d", abs((int)lat_deg), (int)((lat_deg - (int)lat_deg)*10000));
+            sprintf(gps_lon, "%03d.%04d", abs((int)lon_deg), (int)((lon_deg - (int)lon_deg)*10000));
+            gps_has_fix = true;
+        }
+    }
+}
+
+// call this when a full NMEA sentence is ready (with leading '$' and ending in CRLF)
+void gps_sentence_ready(char *s) {
+    // basic checksum could be implemented, but we'll parse directly
+    parse_nmea_sentence(s);
+}
+
+// ---------------- Misc helpers ----------------
+void delay_ms(uint16_t ms) {
+    while(ms--) __delay_ms(1);
+}
+
+// ---------------- MAIN ----------------
+void main(void) {
+    // Oscillator setup: internal 8MHz
+    OSCCON = 0x72; // IRCF = 111 (8MHz), SCS = 10 internal
+    // I/O initial
+    ADCON1 = 0x0F; // all digital by default; we'll configure ADC later
+    TRISBbits.TRISB0 = 1; // SDA released (input)
+    TRISBbits.TRISB1 = 1; // SCL released
+
+    // initialize modules
+    I2C_Init();
+    OLED_Init();
+    OLED_Clear();
+    ADC_Init();
+    UART1_Init();
+    BMP280_Init();
+
+    // initial messages
+    OLED_PrintString(0, 0, "Sistema: ON");
+    OLED_PrintString(1, 0, "Inicializando...");
+    delay_ms(800);
+    OLED_Clear();
+
+    char line[64];
+    uint16_t adc_raw;
+    uint8_t soil_pct;
+    float temp;
+    char buf[32];
+
+    // Main loop: read GPS (poll), read BMP280, read ADC, update OLED (every ~1s)
+    while(1) {
+        // --- read incoming UART data (non-blocking) and collect NMEA lines ---
+        while(PIR1bits.RCIF) {
+            char c = RCREG;
+            if (c == '\n' || c == '\r') {
+                if (gps_idx > 2 && gps_buffer[0]=='$') {
+                    gps_buffer[gps_idx] = 0;
+                    gps_sentence_ready(gps_buffer);
+                }
+                gps_idx = 0;
+                gps_buffer[0] = 0;
+            } else {
+                if (gps_idx < GPS_BUFFER_LEN-1) {
+                    gps_buffer[gps_idx++] = c;
+                } else {
+                    gps_idx = 0;
+                }
+            }
+        }
+
+        // --- BMP280 read temp ---
+        temp = BMP280_ReadTemperature();
+
+        // --- ADC read soil moisture ---
+        adc_raw = ADC_Read_AN0();
+        soil_pct = SoilPercentFromADC(adc_raw);
+
+        // --- Update OLED ---
+        OLED_Clear();
+        // Line 0: Title
+        OLED_PrintString(0, 0, "Estacion - PIC18F4550");
+        // Line 2: Temp
+        sprintf(buf, "Temp: %.1f C", temp);
+        OLED_PrintString(2, 0, buf);
+        // Line 3: Soil moisture
+        sprintf(buf, "Soil: %d %%", soil_pct);
+        OLED_PrintString(3, 0, buf);
+        // Line 4: GPS
+        if (gps_has_fix) {
+            sprintf(buf, "Lat:%s", gps_lat);
+            OLED_PrintString(4, 0, buf);
+            sprintf(buf, "Lon:%s", gps_lon);
+            OLED_PrintString(5, 0, buf);
+        } else {
+            OLED_PrintString(4, 0, "GPS: No fix");
+        }
+
+        // small delay before next update
+        delay_ms(900);
+    }
+}
