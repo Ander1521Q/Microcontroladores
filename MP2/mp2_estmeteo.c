@@ -176,32 +176,56 @@ float BMP280_ReadPressure(void) {
     return 101325.0; // Simulado
 }
 
+
+
+// =======================================================
+//               SENSOR DE HUMEDAD (ADC)
+// =======================================================
+void ADC_Init(void) {
+    ADCON1 = 0x0E;
+    ADCON2 = 0b10101010;
+    ADCON0 = 0x01;
+}
+
+unsigned int ADC_Read(unsigned char channel) {
+    ADCON0 = (channel << 2) | 0x01;
+    __delay_ms(2);
+    GO_DONE = 1;
+    while (GO_DONE);
+    return ((ADRESH << 8) + ADRESL);
+}
+
+
+
+
 void main(void) {
-    float temperatura = 0.0;
-    float presion = 0.0;
-    char buffer[20];
-
-    // Configurar oscilador interno a 8 MHz
-    OSCCONbits.IRCF = 0b111;  // 8MHz
-    OSCCONbits.SCS = 0b10;    // Oscilador interno
-
-    // Inicializar periféricos
+    OSCCONbits.IRCF = 0b111;
+    OSCCONbits.SCS = 0b10;
     I2C_Init();
     OLED_Init();
-    BMP280_Init();
-
     OLED_Clear();
-    OLED_PrintText(15, 0, "ESTACION METEO");
-    OLED_PrintText(0, 2, "Leyendo datos...");
-    __delay_ms(1500);
+    ADC_Init();
+
+    
+
 
     while (1) {
-        // Leer temperatura y presión
-        temperatura = BMP280_ReadTemperature();
-        presion = BMP280_ReadPressure() / 100.0; // Pa → hPa
-
-        // Limpiar pantalla y mostrar resultados
+        if (!BTN) { // Botón presionado
+            pantalla++;
+            if (pantalla > 2) pantalla = 0;
+            __delay_ms(300);
+        }
         OLED_Clear();
+
+        if (pantalla == 0) {
+            float temp = BMP280_ReadTemperature();
+            float pres = BMP280_ReadPressure() / 100;
+            sprintf(buffer, "Temp: %.2f C", temp);
+            OLED_PrintText(0, 1, buffer);
+            sprintf(buffer, "Pres: %.2f hPa", pres);
+            OLED_PrintText(0, 3, buffer);
+        }
+
 
         sprintf(buffer, "Temp: %.2f C", temperatura);
         OLED_PrintText(0, 1, buffer);
