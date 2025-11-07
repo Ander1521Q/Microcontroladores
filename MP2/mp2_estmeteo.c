@@ -145,7 +145,36 @@ void OLED_PrintText(unsigned char x, unsigned char y, const char *text) {
     }
 }
 
+// =======================================================
+//               BMP280 (TEMPERATURA Y PRESIÓN)
+// =======================================================
+void BMP280_Write8(unsigned char reg, unsigned char val) {
+    I2C_Start();
+    I2C_Write(BMP280_ADDR);
+    I2C_Write(reg);
+    I2C_Write(val);
+    I2C_Stop();
+}
 
+unsigned long BMP280_Read24(unsigned char reg) {
+    unsigned long value;
+    I2C_Start();
+    I2C_Write(BMP280_ADDR);
+    I2C_Write(reg);
+    I2C_Start();
+    I2C_Write(BMP280_ADDR | 1);
+    value = ((unsigned long)I2C_Read(1) << 16) | ((unsigned long)I2C_Read(1) << 8) | I2C_Read(0);
+    I2C_Stop();
+    return value;
+}
+
+float BMP280_ReadTemperature(void) {
+    return 25.0; // Simulado
+}
+
+float BMP280_ReadPressure(void) {
+    return 101325.0; // Simulado
+}
 
 void main(void) {
     float temperatura = 0.0;
