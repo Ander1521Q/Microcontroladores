@@ -1,10 +1,11 @@
+
 #include <xc.h>
 #include <stdio.h>
-#include "i2c.h"
-#include "ssd1306.h"
-#include "bmp280.h"
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
 
-// CONFIGURACIÓN DEL PIC
+// ================= CONFIGURACIÓN ==========================
 #pragma config FOSC = INTOSCIO_EC
 #pragma config WDT = OFF
 #pragma config LVP = OFF
@@ -12,11 +13,9 @@
 #pragma config MCLRE = ON
 #pragma config FCMEN = OFF
 #pragma config IESO = OFF
-
 #define _XTAL_FREQ 8000000UL
 
-
-// =============== PINES =========================
+//  PINES 
 #define SDA LATBbits.LATB0
 #define SCL LATBbits.LATB1
 #define SDA_DIR TRISBbits.TRISB0
@@ -28,10 +27,12 @@
 #define OLED_ADDR 0x78
 #define BMP280_ADDR 0xEC
 
+//  VARIABLES GLOBALES 
+float t_fine;
 
-// =======================================================
-//                 I2C SOFTWARE
-// =======================================================
+// ==========================================================
+//                  I2C SOFTWARE
+// ==========================================================
 void I2C_Delay(void) { __delay_us(5); }
 
 void I2C_Init(void) {
@@ -80,11 +81,9 @@ unsigned char I2C_Read(unsigned char ack) {
     return data;
 }
 
-
-
-// =======================================================
-//              OLED SSD1306 (I2C SOFTWARE)
-// =======================================================
+// ==========================================================
+//                    OLED SSD1306
+// ==========================================================
 void OLED_Command(unsigned char cmd) {
     I2C_Start();
     I2C_Write(OLED_ADDR);
@@ -103,8 +102,8 @@ void OLED_Data(unsigned char data) {
 
 void OLED_Init(void) {
     __delay_ms(100);
-    OLED_Command(0xAE); // OFF
-    OLED_Command(0x20); OLED_Command(0x00); // Horizontal
+    OLED_Command(0xAE);
+    OLED_Command(0x20); OLED_Command(0x00);
     OLED_Command(0x81); OLED_Command(0x7F);
     OLED_Command(0xA1);
     OLED_Command(0xA6);
@@ -116,7 +115,7 @@ void OLED_Init(void) {
     OLED_Command(0xDA); OLED_Command(0x12);
     OLED_Command(0xDB); OLED_Command(0x40);
     OLED_Command(0x8D); OLED_Command(0x14);
-    OLED_Command(0xAF); // ON
+    OLED_Command(0xAF);
 }
 
 void OLED_Clear(void) {
@@ -136,51 +135,111 @@ void OLED_SetCursor(unsigned char x, unsigned char y) {
     OLED_Command((x & 0x0F) | 0x01);
 }
 
-// Simulación texto básico (versión simple)
 void OLED_PrintText(unsigned char x, unsigned char y, const char *text) {
     OLED_SetCursor(x, y);
     while (*text) {
-        for (unsigned char i = 0; i < 5; i++) OLED_Data(0xFF);
+        for (unsigned char i = 0; i < 6; i++) OLED_Data(0xFF);
         text++;
     }
 }
 
-// =======================================================
-//               BMP280 (TEMPERATURA Y PRESIÓN)
-// =======================================================
-void BMP280_Write8(unsigned char reg, unsigned char val) {
-    I2C_Start();
-    I2C_Write(BMP280_ADDR);
-    I2C_Write(reg);
-    I2C_Write(val);
+// ==========================================================
+//                   BMP280 
+// ==========================================================
+unsigned short dig_T1, dig_T2, dig_T3;
+unsigned short dig_P1; short dig_P2, dig_P3, dig_P4, dig_P5, dig_P6, dig_P7, dig_P8, dig_P9;
+
+unsigned short read16_LE(unsigned char reg) {
+    unsigned short val;
+    I2C_Start(); I2C_Write(BMP280_ADDR); I2C_Write(reg);
+    I2C_Start(); I2C_Write(BMP280_ADDR | 1);
+    val = I2C_Read(1);
+    val |= (I2C_Read(0) << 8);
     I2C_Stop();
+    return val;
 }
 
-unsigned long BMP280_Read24(unsigned char reg) {
-    unsigned long value;
-    I2C_Start();
-    I2C_Write(BMP280_ADDR);
-    I2C_Write(reg);
-    I2C_Start();
-    I2C_Write(BMP280_ADDR | 1);
-    value = ((unsigned long)I2C_Read(1) << 16) | ((unsigned long)I2C_Read(1) << 8) | I2C_Read(0);
+void BMP280_Init(void) {
+    unsigned char id;
+    I2C_Start(); I2C_Write(BMP280_ADDR); I2C_Write(0xD0);
+    I2C_Start(); I2C_Write(BMP280_ADDR | 1);
+    id = I2C_Read(0);
     I2C_Stop();
-    return value;
+
+    if (id == 0x58) {
+        dig_T1 = read16_LE(0x88);
+        dig_T2 = read16_LE(0x8A);
+        dig_T3 = read16_LE(0x8C);
+        dig_P1 = read16_LE(0x8E);
+        dig_P2 = read16_LE(0x90);
+        dig_P3 = read16_LE(0x92);
+        dig_P4 = read16_LE(0x94);
+        dig_P5 = read16_LE(0x96);
+        dig_P6 = read16_LE(0x98);
+        dig_P7 = read16_LE(0x9A);
+        dig_P8 = read16_LE(0x9C);
+        dig_P9 = read16_LE(0x9E);
+
+        I2C_Start();
+        I2C_Write(BMP280_ADDR);
+        I2C_Write(0xF4);
+        I2C_Write(0x27);  // Normal mode
+        I2C_Stop();
+
+        I2C_Start();
+        I2C_Write(BMP280_ADDR);
+        I2C_Write(0xF5);
+        I2C_Write(0xA0);
+        I2C_Stop();
+    }
 }
 
 float BMP280_ReadTemperature(void) {
-    return 25.0; // Simulado
+    long adc_T;
+    I2C_Start();
+    I2C_Write(BMP280_ADDR);
+    I2C_Write(0xFA);
+    I2C_Start();
+    I2C_Write(BMP280_ADDR | 1);
+    adc_T = ((long)I2C_Read(1) << 12) | ((long)I2C_Read(1) << 4) | (I2C_Read(0) >> 4);
+    I2C_Stop();
+
+    float var1 = (((float)adc_T / 16384.0) - ((float)dig_T1 / 1024.0)) * (float)dig_T2;
+    float var2 = ((((float)adc_T / 131072.0) - ((float)dig_T1 / 8192.0)) *
+                 (((float)adc_T / 131072.0) - ((float)dig_T1 / 8192.0))) * (float)dig_T3;
+    t_fine = (long)(var1 + var2);
+    float T = (var1 + var2) / 5120.0;
+    return T;
 }
 
 float BMP280_ReadPressure(void) {
-    return 101325.0; // Simulado
+    long adc_P;
+    I2C_Start();
+    I2C_Write(BMP280_ADDR);
+    I2C_Write(0xF7);
+    I2C_Start();
+    I2C_Write(BMP280_ADDR | 1);
+    adc_P = ((long)I2C_Read(1) << 12) | ((long)I2C_Read(1) << 4) | (I2C_Read(0) >> 4);
+    I2C_Stop();
+
+    float var1 = ((float)t_fine / 2.0) - 64000.0;
+    float var2 = var1 * var1 * ((float)dig_P6) / 32768.0;
+    var2 = var2 + var1 * ((float)dig_P5) * 2.0;
+    var2 = (var2 / 4.0) + (((float)dig_P4) * 65536.0);
+    var1 = (((float)dig_P3) * var1 * var1 / 524288.0 + ((float)dig_P2) * var1) / 524288.0;
+    var1 = (1.0 + var1 / 32768.0) * ((float)dig_P1);
+    if (var1 == 0) return 0;
+    float p = 1048576.0 - (float)adc_P;
+    p = (p - (var2 / 4096.0)) * 6250.0 / var1;
+    var1 = ((float)dig_P9) * p * p / 2147483648.0;
+    var2 = p * ((float)dig_P8) / 32768.0;
+    p = p + (var1 + var2 + ((float)dig_P7)) / 16.0;
+    return p;
 }
 
-
-
-// =======================================================
-//               SENSOR DE HUMEDAD (ADC)
-// =======================================================
+// ==========================================================
+//                SENSOR HUMEDAD (ADC) + GPS
+// ==========================================================
 void ADC_Init(void) {
     ADCON1 = 0x0E;
     ADCON2 = 0b10101010;
@@ -195,9 +254,6 @@ unsigned int ADC_Read(unsigned char channel) {
     return ((ADRESH << 8) + ADRESL);
 }
 
-// =======================================================
-//               UART GPS (NEO-6M)
-// =======================================================
 void UART_Init(void) {
     TXSTAbits.SYNC = 0;
     TXSTAbits.BRGH = 0;
@@ -213,24 +269,32 @@ char UART_Read(void) {
     return RCREG;
 }
 
-
+// ==========================================================
+//                   MAIN PROGRAM
+// ==========================================================
 void main(void) {
     OSCCONbits.IRCF = 0b111;
     OSCCONbits.SCS = 0b10;
+
     I2C_Init();
     OLED_Init();
     OLED_Clear();
+    BMP280_Init();
     ADC_Init();
+    UART_Init();
 
-    
+    BTN_DIR = 1;
 
+    unsigned char pantalla = 0;
+    char buffer[22];
 
     while (1) {
-        if (!BTN) { // Botón presionado
+        if (!BTN) {
             pantalla++;
             if (pantalla > 2) pantalla = 0;
-            __delay_ms(300);
+            __delay_ms(250);
         }
+
         OLED_Clear();
 
         if (pantalla == 0) {
@@ -241,20 +305,19 @@ void main(void) {
             sprintf(buffer, "Pres: %.2f hPa", pres);
             OLED_PrintText(0, 3, buffer);
         }
-
-         else if (pantalla == 1) {
+        else if (pantalla == 1) {
             unsigned int hum = ADC_Read(0);
             float humedad = ((float)hum / 1023.0) * 100.0;
             sprintf(buffer, "Humedad: %.1f%%", humedad);
             OLED_PrintText(0, 2, buffer);
         }
-
         else if (pantalla == 2) {
-            sprintf(buffer, "GPS: Conectado");
-            OLED_PrintText(0, 2, buffer);
+            sprintf(buffer, "GPS: 03.437S");
+            OLED_PrintText(0, 1, buffer);
+            sprintf(buffer, "     76.520W");
+            OLED_PrintText(0, 3, buffer);
         }
 
         __delay_ms(800);
-        
     }
 }
