@@ -195,7 +195,23 @@ unsigned int ADC_Read(unsigned char channel) {
     return ((ADRESH << 8) + ADRESL);
 }
 
+// =======================================================
+//               UART GPS (NEO-6M)
+// =======================================================
+void UART_Init(void) {
+    TXSTAbits.SYNC = 0;
+    TXSTAbits.BRGH = 0;
+    BAUDCONbits.BRG16 = 0;
+    SPBRG = ((_XTAL_FREQ / (64UL * 9600)) - 1);
+    RCSTAbits.SPEN = 1;
+    RCSTAbits.CREN = 1;
+    TXSTAbits.TXEN = 1;
+}
 
+char UART_Read(void) {
+    while (!PIR1bits.RCIF);
+    return RCREG;
+}
 
 
 void main(void) {
@@ -226,13 +242,19 @@ void main(void) {
             OLED_PrintText(0, 3, buffer);
         }
 
+         else if (pantalla == 1) {
+            unsigned int hum = ADC_Read(0);
+            float humedad = ((float)hum / 1023.0) * 100.0;
+            sprintf(buffer, "Humedad: %.1f%%", humedad);
+            OLED_PrintText(0, 2, buffer);
+        }
 
-        sprintf(buffer, "Temp: %.2f C", temperatura);
-        OLED_PrintText(0, 1, buffer);
+        else if (pantalla == 2) {
+            sprintf(buffer, "GPS: Conectado");
+            OLED_PrintText(0, 2, buffer);
+        }
 
-        sprintf(buffer, "Pres: %.2f hPa", presion);
-        OLED_PrintText(0, 3, buffer);
-
-        __delay_ms(1000);
+        __delay_ms(800);
+        
     }
 }
