@@ -1,0 +1,91 @@
+__S0 8000 0 ABS 0
+__S1 64 0 ABS 0
+__S3 0 0 ABS 0
+__Hudata_bank4 0 0 ABS 0
+__Ludata_bank4 0 0 ABS 0
+__Hconfig 30000E 0 CONFIG 4
+__Lconfig 0 0 CONFIG 4
+__Hudata_acs 0 0 ABS 0
+__Ludata_acs 0 0 ABS 0
+isa$xinst 0 0 ABS 0
+__Hudata_bank5 0 0 ABS 0
+__Ludata_bank5 0 0 ABS 0
+__HresetVec 0 0 ABS 0
+__LresetVec 0 0 ABS 0
+__Hcode 0 0 ABS 0
+__Lcode 0 0 ABS 0
+__Hdata 0 0 ABS 0
+__Ldata 0 0 ABS 0
+isa$std 1 0 ABS 0
+__Hudata_bank0 0 0 ABS 0
+__Ludata_bank0 0 0 ABS 0
+__Hudata_bank6 0 0 ABS 0
+__Ludata_bank6 0 0 ABS 0
+__H__absolute__ 0 0 ABS 0
+__L__absolute__ 0 0 ABS 0
+__Hedata 0 0 ABS 0
+__Ledata 0 0 ABS 0
+__Hudata 0 0 ABS 0
+__Ludata 0 0 ABS 0
+__Hudata_bank1 0 0 ABS 0
+__Ludata_bank1 0 0 ABS 0
+__Hspace_0 8000 0 ABS 0
+__Lspace_0 0 0 ABS 0
+__Hspace_1 64 0 ABS 0
+__Lspace_1 0 0 ABS 0
+__Hudata_bank7 0 0 ABS 0
+__Ludata_bank7 0 0 ABS 0
+__Hspace_3 0 0 ABS 0
+__Lspace_3 0 0 ABS 0
+__Hspace_4 60000E 0 ABS 0
+__Lspace_4 0 0 ABS 0
+__Hudata_bank2 0 0 ABS 0
+__Ludata_bank2 0 0 ABS 0
+__Hmain_code 0 0 ABS 0
+__Lmain_code 0 0 ABS 0
+__Hudata_bank3 0 0 ABS 0
+__Ludata_bank3 0 0 ABS 0
+%segments
+udata 60 63 RAM 60 1
+main_code 7FA6 7FFF CODE 7FA6 0
+resetVec 7FA2 7FA5 CODE 7FA2 0
+%locals
+build/default/debug/Alarma_1.o
+Alarma_1.asm
+20 7FA2 0 CODE 0
+Alarma_1.asm
+26 7FA6 0 CODE 0
+27 7FA8 0 CODE 0
+29 7FAA 0 CODE 0
+30 7FAC 0 CODE 0
+31 7FAE 0 CODE 0
+34 7FB2 0 CODE 0
+35 7FB4 0 CODE 0
+36 7FB6 0 CODE 0
+39 7FB8 0 CODE 0
+40 7FBC 0 CODE 0
+41 7FBE 0 CODE 0
+42 7FC2 0 CODE 0
+45 7FC6 0 CODE 0
+46 7FC8 0 CODE 0
+47 7FCA 0 CODE 0
+50 7FCC 0 CODE 0
+51 7FD0 0 CODE 0
+52 7FD2 0 CODE 0
+53 7FD6 0 CODE 0
+56 7FDA 0 CODE 0
+57 7FDC 0 CODE 0
+60 7FDE 0 CODE 0
+61 7FE0 0 CODE 0
+64 7FE2 0 CODE 0
+65 7FE4 0 CODE 0
+68 7FE6 0 CODE 0
+69 7FE8 0 CODE 0
+70 7FEA 0 CODE 0
+71 7FEC 0 CODE 0
+72 7FEE 0 CODE 0
+73 7FF2 0 CODE 0
+74 7FF4 0 CODE 0
+75 7FF8 0 CODE 0
+76 7FFA 0 CODE 0
+78 7FFE 0 CODE 0
