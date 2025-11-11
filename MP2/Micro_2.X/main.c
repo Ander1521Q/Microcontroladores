@@ -16,6 +16,7 @@ uint8_t UART_Available(void);
 void Read_Sensors(void);
 void Display_Time_Humidity(void);
 void Display_GPS(void);
+void Display_Suspended(void);
 void Test_OLED(void);
 uint8_t GPS_ParseData(char *buffer, char *lat, char *lon, char *alt);
 
@@ -31,6 +32,9 @@ char gps_alt[8] = "---";
 uint8_t gps_fix = 0;
 uint8_t gps_satellites = 0;
 
+uint8_t system_suspended = 0;
+uint8_t last_button_state = 1; // Estado anterior del bot?n (pull-up)
+
 void main(void) {
     System_Init();
     
@@ -38,32 +42,56 @@ void main(void) {
     Test_OLED();
     __delay_ms(2000);
     
-    // Leer sensores y mostrar datos
+    // Leer sensores y mostrar datos iniciales
     Read_Sensors();
     Display_Time_Humidity();
     
-    uint8_t screen_mode = 0;
-    uint32_t counter = 0;
-    uint32_t gps_read_counter = 0;
+    uint8_t screen_mode = 0; // 0 = Tiempo/Humedad, 1 = GPS
+    uint16_t update_counter = 0;
+    uint16_t display_counter = 0;
+    uint16_t gps_read_counter = 0;
+    uint8_t gps_updated = 0;
     
     while(1) {
-        counter++;
-        gps_read_counter++;
+        // ===== CONTROL DEL BOT?N TOUCH =====
+        uint8_t current_button_state = PORTBbits.RB2; // Leer estado del bot?n
         
-        // Leer sensores cada 2 segundos
-        if(counter % 200 == 0) {
-            Read_Sensors();
+        // Detectar flanco descendente (bot?n presionado)
+        if (last_button_state == 1 && current_button_state == 0) {
+            __delay_ms(50); // Debounce
+            if (PORTBbits.RB2 == 0) { // Confirmar que sigue presionado
+                system_suspended = !system_suspended; // Cambiar estado
+                
+                if (system_suspended) {
+                    Display_Suspended();
+                } else {
+                    // Al reactivar, mostrar pantalla actual
+                    if (screen_mode == 0) {
+                        Display_Time_Humidity();
+                    } else {
+                        Display_GPS();
+                    }
+                }
+            }
+            __delay_ms(300); // Evitar m?ltiples detecciones
+        }
+        last_button_state = current_button_state;
+        
+        // Si el sistema est? suspendido, solo verificar el bot?n
+        if (system_suspended) {
+            __delay_ms(10);
+            continue;
         }
         
-        // Leer GPS más frecuentemente (cada 500ms)
-        if(gps_read_counter % 50 == 0) {
-            // Leer datos GPS si están disponibles
+        // ===== LECTURA CONTINUA DEL GPS =====
+        gps_read_counter++;
+        if (gps_read_counter >= 5) { // Leer GPS cada 50ms
             if(UART_Available()) {
                 char buffer[100];
                 uint8_t i = 0;
                 char c;
                 
-                // Leer una línea completa del GPS
+                // Leer una l?nea completa del GPS
                 while(i < sizeof(buffer)-1) {
                     if(UART_Available()) {
                         c = UART_Read();
@@ -71,20 +99,39 @@ void main(void) {
                         if(c != '\r') {
                             buffer[i++] = c;
                         }
+                    } else {
+                        // Peque?a pausa para esperar m?s datos
+                        __delay_us(100);
                     }
                 }
                 buffer[i] = '\0';
                 
-                // Procesar datos GPS
-                if(strlen(buffer) > 0) {
-                    GPS_ParseData(buffer, gps_lat, gps_lon, gps_alt);
+                // Procesar datos GPS si la l?nea no est? vac?a
+                if(i > 6) { // M?nimo 6 caracteres para ser una trama v?lida
+                    gps_updated = GPS_ParseData(buffer, gps_lat, gps_lon, gps_alt);
                 }
+            }
+            gps_read_counter = 0;
+        }
+        
+        // ===== ACTUALIZACI?N DE SENSORES =====
+        update_counter++;
+        if(update_counter >= 200) { // 200 * 10ms = 2 segundos
+            Read_Sensors();
+            update_counter = 0;
+            
+            // Si estamos en pantalla de tiempo/humedad, actualizar display
+            if(screen_mode == 0) {
+                Display_Time_Humidity();
             }
         }
         
-        // Cambiar pantalla cada 9 segundos
-        if(counter % 900 == 0) {
+        // ===== CAMBIO DE PANTALLA =====
+        display_counter++;
+        if(display_counter >= 800) { // 800 * 10ms = 8 segundos
             screen_mode = !screen_mode;
+            display_counter = 0;
+            
             if(screen_mode == 0) {
                 Display_Time_Humidity();
             } else {
@@ -92,11 +139,13 @@ void main(void) {
             }
         }
         
-        __delay_ms(10);
+        // ===== ACTUALIZACI?N DE PANTALLA GPS =====
+        if(screen_mode == 1 && gps_updated) {
+            Display_GPS();
+            gps_updated = 0; // Reset flag
+        }
         
-        // Reset counter para evitar overflow
-        if(counter >= 60000) counter = 0;
-        if(gps_read_counter >= 60000) gps_read_counter = 0;
+        __delay_ms(10); // Delay principal de 10ms
     }
 }
 
@@ -109,25 +158,27 @@ void System_Init(void) {
     ADCON1 = 0x0F;
     CMCON = 0x07;
     
-    TRISAbits.TRISA0 = 1;    // RA0 analógico
+    TRISAbits.TRISA0 = 1;    // RA0 anal?gico
     TRISCbits.TRISC7 = 1;    // RC7 RX GPS
     TRISCbits.TRISC6 = 0;    // RC6 TX
+    TRISBbits.TRISB2 = 1;    // RB2 como entrada para bot?n touch
     
-    // Inicializar periféricos
+    // Configurar pull-up para el bot?n (si tu PIC lo soporta)
+    // Si no, usa resistencia pull-up externa de 10k a VCC
+    INTCON2bits.RBPU = 0;    // Habilitar pull-ups internos (si disponibles)
+    
+    // Inicializar perif?ricos
     ADC_Init();
     UART_Init(9600);
     I2C_Init();
     OLED_Init();
     DS1307_Init();
     
-    // Configurar RTC - Solo si no está funcionando
+    // Configurar RTC - Solo si no est? funcionando
     if (!DS1307_IsRunning()) {
-        // Aquí puedes ajustar la hora inicial con 2 minutos de adelanto
-        // Por ejemplo, si quieres que empiece en 12:02:00
-        DS1307_SetTime(19, 45, 0);  // 12:02:00
-        DS1307_SetDate(10, 11, 25); // 15 de enero 2025
+        DS1307_SetTime(12, 2, 0);  // 12:02:00
+        DS1307_SetDate(15, 1, 25); // 15 de enero 2025
     }
-    // Si el RTC ya está funcionando, usará la hora que ya tiene
 }
 
 void ADC_Init(void) {
@@ -154,6 +205,12 @@ void UART_Init(long baud) {
     RCSTAbits.SPEN = 1;
     TXSTAbits.TXEN = 1;
     RCSTAbits.CREN = 1;
+    
+    // Limpiar buffer de recepci?n
+    while(RCSTAbits.OERR) {
+        RCSTAbits.CREN = 0;
+        RCSTAbits.CREN = 1;
+    }
 }
 
 char UART_Read(void) {
@@ -162,6 +219,11 @@ char UART_Read(void) {
 }
 
 uint8_t UART_Available(void) {
+    // Verificar si hay datos disponibles y si no hay error de overrun
+    if(RCSTAbits.OERR) {
+        RCSTAbits.CREN = 0;
+        RCSTAbits.CREN = 1;
+    }
     return PIR1bits.RCIF;
 }
 
@@ -179,7 +241,7 @@ void Read_Sensors(void) {
     }
     humidity_raw = (uint16_t)(adc_sum / 3);
     
-    // Convertir a porcentaje
+    // Convertir a porcentaje (f?rmula actual)
     humidity_percent = (1023.0 - (float)humidity_raw) / 10.23;
     if(humidity_percent < 0) humidity_percent = 0;
     if(humidity_percent > 100) humidity_percent = 100;
@@ -211,45 +273,49 @@ uint8_t GPS_ParseData(char *buffer, char *lat, char *lon, char *alt) {
         token = strtok(NULL, ",");
         
         switch(field) {
-            case 2: // Hora UTC
-                // Podríamos usar esto para sincronizar el RTC si queremos
-                break;
-                
-            case 3: // Latitud
-                if(token != NULL && strlen(token) > 0) {
-                    strncpy(lat, token, 10);
-                    lat[10] = '\0';
+            case 2: // Latitud
+                if(token != NULL && strlen(token) > 2) { // M?nimo 3 caracteres
+                    strncpy(lat, token, 9);
+                    lat[9] = '\0';
+                } else {
+                    strcpy(lat, "---");
                 }
                 break;
                 
-            case 4: // Dirección latitud (N/S)
-                if(token != NULL && strlen(token) > 0 && lat[0] != '\0') {
+            case 3: // Direcci?n latitud (N/S)
+                if(token != NULL && strlen(token) > 0 && lat[0] != '-') {
                     strncat(lat, token, 1);
                 }
                 break;
                 
-            case 5: // Longitud
-                if(token != NULL && strlen(token) > 0) {
-                    strncpy(lon, token, 10);
-                    lon[10] = '\0';
+            case 4: // Longitud
+                if(token != NULL && strlen(token) > 2) { // M?nimo 3 caracteres
+                    strncpy(lon, token, 9);
+                    lon[9] = '\0';
+                } else {
+                    strcpy(lon, "---");
                 }
                 break;
                 
-            case 6: // Dirección longitud (E/W)
-                if(token != NULL && strlen(token) > 0 && lon[0] != '\0') {
+            case 5: // Direcci?n longitud (E/W)
+                if(token != NULL && strlen(token) > 0 && lon[0] != '-') {
                     strncat(lon, token, 1);
                 }
                 break;
                 
-            case 7: // Indicador de calidad GPS
+            case 6: // Indicador de calidad GPS (0=sin fix, 1=GPS fix, 2=DGPS fix)
                 if(token != NULL && token[0] != '\0') {
-                    gps_fix = (token[0] >= '1'); // 0=sin fix, 1=GPS fix, 2=DGPS fix
+                    gps_fix = (token[0] == '1' || token[0] == '2');
+                } else {
+                    gps_fix = 0;
                 }
                 break;
                 
-            case 8: // Número de satélites
+            case 7: // N?mero de sat?lites
                 if(token != NULL && token[0] != '\0') {
                     gps_satellites = atoi(token);
+                } else {
+                    gps_satellites = 0;
                 }
                 break;
                 
@@ -257,6 +323,8 @@ uint8_t GPS_ParseData(char *buffer, char *lat, char *lon, char *alt) {
                 if(token != NULL && strlen(token) > 0) {
                     strncpy(alt, token, 6);
                     strcat(alt, "m");
+                } else {
+                    strcpy(alt, "---");
                 }
                 break;
         }
@@ -314,16 +382,25 @@ void Display_GPS(void) {
     OLED_PrintText(0, 4, "FIX:");
     if(gps_fix) {
         OLED_PrintText(25, 4, "SI");
+        OLED_PrintText(40, 4, "ACTIVO");
     } else {
         OLED_PrintText(25, 4, "NO");
+        OLED_PrintText(40, 4, "BUSCANDO");
     }
     
-    // Mostrar número de satélites
+    // Mostrar n?mero de sat?lites
     OLED_PrintText(0, 5, "SAT:");
     sprintf(buffer, "%d", gps_satellites);
     OLED_PrintText(25, 5, buffer);
     
     OLED_PrintText(0, 6, "ACTUALIZANDO...");
+}
+
+void Display_Suspended(void) {
+    OLED_Clear();
+    OLED_PrintText(25, 2, "SISTEMA");
+    OLED_PrintText(15, 4, "SUSPENDIDO");
+    OLED_PrintText(10, 6, "PRESIONE BOTON");
 }
 
 void Test_OLED(void) {

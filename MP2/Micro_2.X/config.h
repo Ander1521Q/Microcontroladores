@@ -5,7 +5,7 @@
 
 #define _XTAL_FREQ 8000000UL
 
-// CONFIGURACIÓN DEL PIC18F4550
+// CONFIGURACI?N DEL PIC18F4550
 #pragma config FOSC = INTOSCIO_EC
 #pragma config PLLDIV = 1
 #pragma config CPUDIV = OSC1_PLL2
