@@ -999,7 +999,7 @@ void displayStartupScreen() {
   delay(3000); // Mostrar por 3 segundos
 }
 
-// -------- FUNCIÓN PARA MOSTRAR DATOS EN OLED --------
+// -------- FUNCIÓN PARA MOSTRAR DATOS EN OLED (CORREGIDA) --------
 void displayOLEDData() {
   display.clearDisplay();
   
@@ -1016,12 +1016,19 @@ void displayOLEDData() {
     display.print("IP:");
     display.println(WiFi.localIP().toString());
   } else {
-    // Encabezado con fecha y hora
+    // Encabezado con fecha y hora - VERSIÓN CORREGIDA
     display.setTextSize(1);
+    
+    // Fecha alineada a la izquierda
     display.setCursor(0, 0);
     display.print(currentDate);
-    display.setCursor(85, 0);
-    display.println(currentTime);
+    
+    // Hora alineada a la derecha (con cálculo dinámico)
+    int16_t x1, y1;
+    uint16_t w, h;
+    display.getTextBounds(currentTime, 0, 0, &x1, &y1, &w, &h);
+    display.setCursor(128 - w, 0); // Alinear a la derecha
+    display.print(currentTime);
     
     // Línea separadora
     display.drawFastHLine(0, 9, 128, SSD1306_WHITE);
