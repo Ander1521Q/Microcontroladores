@@ -67,3 +67,61 @@ const uint8_t humidity_icon[] PROGMEM = {0b00000100,0b00000100,0b00001010,0b0000
 const uint8_t pressure_icon[] PROGMEM = {0b00011111,0b00011111,0b00011111,0b00000000,0b00000000,0b00011111,0b00011111,0b00011111};
 const uint8_t light_icon[] PROGMEM = {0b00000100,0b00010101,0b00001110,0b00011111,0b00001110,0b00010101,0b00000100,0b00000000};
 
+void initLDRFilter() {
+    for (int i = 0; i < LDR_SAMPLES; i++) {
+        ldrReadings[i] = analogRead(LDR_PIN);
+        delay(10);
+    }
+    Serial.println("✅ Filtro LDR inicializado");
+}
+
+int readStableLDR() {
+    int newReading = analogRead(LDR_PIN);
+    ldrReadings[ldrIndex] = newReading;
+
+    ldrIndex = (ldrIndex + 1) % LDR_SAMPLES;
+
+    long sum = 0;
+    for (int i = 0; i < LDR_SAMPLES; i++) {
+        sum += ldrReadings[i];
+    }
+
+    return sum / LDR_SAMPLES;
+}
+
+// ===== DETERMINAR PERIODO DEL DÍA 
+// Modo automático basado en niveles de luz
+void determineDayPeriod() {
+
+    if (autoMode) {
+        // Límites calibrados: hasta 2800 es luz clara
+        if (stableLightLevel < 100) {
+            dayPeriod = "Luz Extrema";
+            isDayMode = true;
+        }
+        else if (stableLightLevel < 500) {
+            dayPeriod = "Día Brillante";
+            isDayMode = true;
+        }
+        else if (stableLightLevel < 1500) {
+            dayPeriod = "Día";
+            isDayMode = true;
+        }
+        else if (stableLightLevel < 2800) {
+            dayPeriod = "Atardecer";
+            isDayMode = true;
+        }
+        else if (stableLightLevel < 3500) {
+            dayPeriod = "Anochecer";
+            isDayMode = false;
+        }
+        else {
+            dayPeriod = "Noche";
+            isDayMode = false;
+        }
+    }
+    else {
+        // Modo manual → solo respeta el estado elegido
+        dayPeriod = isDayMode ? "Día (Manual)" : "Noche (Manual)";
+    }
+}
