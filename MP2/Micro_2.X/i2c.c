@@ -42,3 +42,4 @@ unsigned char I2C_Read(unsigned char ack) {
     while (SSPCON2bits.ACKEN);
     return data;
 }
+b
