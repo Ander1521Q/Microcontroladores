@@ -194,3 +194,43 @@ void updateOLED() {
     // Dibujar todo en pantalla
     display.display();
 }
+
+unsigned long previousMillis = 0;
+const unsigned long interval = 1000;   // Leer todo cada 1 segundo
+
+void loop() {
+
+    unsigned long currentMillis = millis();
+
+    // Leer sensores y actualizar display cada 1 segundo
+    if (currentMillis - previousMillis >= interval) {
+        previousMillis = currentMillis;
+
+        // ===== LEER RTC =====
+        getTimeDS1307();
+
+        // ===== LEER DHT11 =====
+        readDHT11();
+
+        // ===== LEER BMP280 =====
+        readBMP280();
+
+        // ===== LEER LDR =====
+        readLDR();
+
+        // ===== ACTUALIZAR PANTALLA =====
+        updateOLED();
+
+        // ===== IMPRIMIR TODO POR SERIAL =====
+        Serial.print("Hora: ");
+        Serial.print(rtcHour); Serial.print(":");
+        Serial.print(rtcMinute); Serial.print(":");
+        Serial.println(rtcSecond);
+
+        Serial.print("Temp: "); Serial.print(dhtTemperature); Serial.println(" C");
+        Serial.print("Humedad: "); Serial.print(dhtHumidity); Serial.println(" %");
+        Serial.print("Presion: "); Serial.print(pressure); Serial.println(" hPa");
+        Serial.print("Luz LDR: "); Serial.println(ldrValue);
+        Serial.println("----------------------------");
+    }
+}
