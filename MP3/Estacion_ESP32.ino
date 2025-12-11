@@ -234,3 +234,90 @@ void loop() {
         Serial.println("----------------------------");
     }
 }
+
+
+// Variables de estado de error
+bool errorRTC = false;
+bool errorDHT = false;
+bool errorBMP = false;
+
+
+// ====== Manejo de errores para RTC ======
+void safeReadRTC() {
+    if (!readDS1307()) {   // La función retorna 0 si falla
+        errorRTC = true;
+        Serial.println("⚠ ERROR: No se puede comunicar con DS1307");
+        rtcHour = rtcMinute = rtcSecond = 0;   // Valores por defecto
+    } else {
+        errorRTC = false;
+    }
+}
+
+// ====== Manejo de errores para DHT11 ======
+void safeReadDHT11() {
+    int chk = dht.read(pinDHT);  // Se asume que esta librería se usa como en tus códigos
+
+    if (chk != 0) { // Cualquier valor distinto de 0 es error
+        errorDHT = true;
+        Serial.println("⚠ ERROR: Fallo en lectura del DHT11");
+
+        dhtTemperature = -100;  // Valor imposible → indica error
+        dhtHumidity = -1;
+    } else {
+        errorDHT = false;
+        dhtTemperature = dht.readTemperature();
+        dhtHumidity = dht.readHumidity();
+    }
+}
+
+// ====== Manejo de errores para BMP280 ======
+void safeReadBMP280() {
+    if (!bmp.begin()) {
+        errorBMP = true;
+        Serial.println("⚠ ERROR: BMP280 no encontrado");
+        pressure = -1;
+        bmpTemperature = -100;
+        return;
+    }
+
+    errorBMP = false;
+    pressure = bmp.readPressure() / 100.0;  // hPa
+    bmpTemperature = bmp.readTemperature();
+}
+
+
+// ====== Actualizar pantalla con errores ======
+void updateOLED() {
+    oled.clear();
+
+    oled.setCursor(0, 0);
+    oled.print("METEO STATION");
+
+    // Hora
+    oled.setCursor(0, 2);
+    if (!errorRTC) {
+        oled.printf("Hora: %02d:%02d:%02d", rtcHour, rtcMinute, rtcSecond);
+    } else {
+        oled.print("Hora: ERROR RTC");
+    }
+
+    // DHT
+    oled.setCursor(0, 3);
+    if (!errorDHT) {
+        oled.printf("Temp: %.1fC  Hum:%d%%", dhtTemperature, (int)dhtHumidity);
+    } else {
+        oled.print("DHT11 ERROR");
+    }
+
+    // BMP
+    oled.setCursor(0, 4);
+    if (!errorBMP) {
+        oled.printf("Presion: %.1fhPa", pressure);
+    } else {
+        oled.print("BMP280 ERROR");
+    }
+
+    // LDR (no suele fallar)
+    oled.setCursor(0, 5);
+    oled.printf("Luz: %d", ldrValue);
+}
