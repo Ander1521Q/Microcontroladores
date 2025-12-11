@@ -152,3 +152,45 @@ void readBMP280() {
     pressure     = p / 100.0;     // Convertir Pa → hPa
     bmpTemperature = tempBMP;
 }
+
+void updateOLED() {
+
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setTextColor(SSD1306_WHITE);
+
+    // ===== HORA ==========================
+    display.setCursor(0, 0);
+    display.print("Hora: ");
+    if (rtcHour < 10) display.print("0");
+    display.print(rtcHour);
+    display.print(":");
+    if (rtcMinute < 10) display.print("0");
+    display.print(rtcMinute);
+
+    // ===== TEMPERATURA ===================
+    display.setCursor(0, 12);
+    display.print("Temp: ");
+    display.print(dhtTemperature);
+    display.print(" C");
+
+    // ===== HUMEDAD ========================
+    display.setCursor(0, 24);
+    display.print("Humed: ");
+    display.print(dhtHumidity);
+    display.print(" %");
+
+    // ===== PRESIÓN ATMOSFÉRICA ============
+    display.setCursor(0, 36);
+    display.print("Pres: ");
+    display.print(pressure);
+    display.print(" hPa");
+
+    // ===== LUZ AMBIENTAL ==================
+    display.setCursor(0, 48);
+    display.print("Luz: ");
+    display.print(ldrValue);
+
+    // Dibujar todo en pantalla
+    display.display();
+}
