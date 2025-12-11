@@ -125,3 +125,30 @@ void determineDayPeriod() {
         dayPeriod = isDayMode ? "Día (Manual)" : "Noche (Manual)";
     }
 }
+
+void readDHT11() {
+    float t = dht.readTemperature();
+    float h = dht.readHumidity();
+
+    if (isnan(t) || isnan(h)) {
+        Serial.println("⚠ Error leyendo DHT11");
+        return;
+    }
+
+    dhtTemperature = t;   // °C
+    dhtHumidity    = h;   // %
+}
+
+// ===== LECTURA DEL BMP280 =====
+void readBMP280() {
+    float p = bmp.readPressure();      // Pascales
+    float tempBMP = bmp.readTemperature(); // °C
+
+    if (isnan(p) || isnan(tempBMP)) {
+        Serial.println("⚠ Error leyendo BMP280");
+        return;
+    }
+
+    pressure     = p / 100.0;     // Convertir Pa → hPa
+    bmpTemperature = tempBMP;
+}
